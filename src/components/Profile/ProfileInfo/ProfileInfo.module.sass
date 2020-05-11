@@ -1,0 +1,23 @@
+@import ../../../_variables
+
+.profileInfo
+    display: grid
+    grid-template-columns: 1fr 3fr
+    align-items: center
+    .avatar
+        position: relative
+        width: 200px
+        height: 200px
+        border-radius: 100px
+        overflow: hidden
+        .img
+            position: absolute
+            width: 100%
+            height: 100%
+            background-position: center center
+            background-repeat: no-repeat
+            background-size: cover
+    .description
+        h1
+            font-size: $font-header_normal
+            line-height: $font-header_normal
