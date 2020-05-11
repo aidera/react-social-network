@@ -1,50 +1,44 @@
 import React from "react";
 import s from './Users.module.sass'
 import User from "./User/User";
-import * as axios from "axios";
+import Preloader from './../common/Preloader/Preloader';
+import Paginator from '../common/Paginator/Paginator';
 
 
-class Users extends React.Component {
-
-    componentDidMount() {
-        axios.get('https://social-network.samuraijs.com/api/1.0/users')
-            .then(responce => {
-                this.props.setUsers(responce.data.items);
-            });
-    }
-
-    getUsers = () => {
-
-        axios.get('https://social-network.samuraijs.com/api/1.0/users')
-            .then(responce => {
-                this.props.setUsers(responce.data.items);
-            });
-
-    }
+let Users = React.memo(({onPageChange, currentPage, pagesCount, isFetching, users, follow, unfollow, followingInProgress, ...props}) => {
 
 
-    render() {
-        return (
-            <div className={s.usersPage}>
+    return (
+        <>
+            {isFetching === false ?
+                <div className={s.usersPage}>
                 <h1>Users</h1>
                 <div className={s.buttons}>
-                    <button onClick={this.getUsers} className="button">Get Users</button>
+
+                    <Paginator currentPage={currentPage} pagesCount={pagesCount} onPageChange={onPageChange}  />
+
+                    <button className="button">Get Users</button>
                 </div>
                 {
-                    this.props.users.map(user => {
-
+                    users.map(user => {
                             return <User
                                 key={user.id}
                                 state={user}
-                                follow={this.props.follow}
-                                unfollow={this.props.unfollow}
+                                follow={follow}
+                                unfollow={unfollow}
+                                followingInProgress={followingInProgress}
                             />
                         }
                     )
                 }
-            </div>
-        );
-    }
-}
+            </div> : <Preloader/>
+            }
+
+
+
+        </>
+
+    )
+})
 
 export default Users;

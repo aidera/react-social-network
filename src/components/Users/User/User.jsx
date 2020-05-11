@@ -1,23 +1,32 @@
 import React from "react";
 import s from './User.module.sass'
 import defaultUserPhoto from '../../../assets/images/default-user.png';
+import {NavLink} from 'react-router-dom';
+import Preloader from "../../common/Preloader/Preloader";
 
-let User = (props) => {
+let User = ({state, follow, unfollow, followingInProgress, ...props}) => {
 
-    let userImage = props.state.photos.small != null ? props.state.photos.small : defaultUserPhoto;
+
+    let userImage = state.photos.small != null ? state.photos.small : defaultUserPhoto;
+
 
     return (
         <div className={s.user}>
-            <div className={s.avatar} style={{backgroundImage: `url(${userImage})`}} />
+            <NavLink to={`/profile/${state.id}`}>
+                <div className={s.avatar} style={{backgroundImage: `url(${userImage})`}} />
+            </NavLink>
             <div className={s.description}>
-                <div className={s.name}>{props.state.name}</div>
-                {/*<div className={s.loaction}>{`${props.state.location.city}, ${props.state.location.country}`}</div>*/}
+                <div className={s.name}>{state.name}</div>
             </div>
             <div className={s.buttons}>
-                {props.state.followed === true
-                    ? <button className='button' onClick={ () => { props.unfollow(props.state.id) } }>Unfollow</button>
-                    : <button className='button' onClick={ () => { props.follow(props.state.id)} }>Follow</button>
+                {followingInProgress.some(id => id === state.id)
+                    ? <Preloader />
+                    : state.followed === true
+                            ? <button className='button' onClick={ () => { unfollow(state.id) } }>Unfollow</button>
+                            : <button className='button' onClick={ () => { follow(state.id)} }>Follow</button>
+
                 }
+
             </div>
         </div>
     );

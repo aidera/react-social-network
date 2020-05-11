@@ -1,25 +1,56 @@
-import React from 'react';
-import s from './Profile.module.sass';
-import MyPostsContainer from './MyPosts/MyPostsContainer';
-import ProfileInfo from './ProfileInfo/ProfileInfo';
+import Profile from './Profile';
+import React from "react";
+import {getUserProfile,getUserStatus,updateUserStatus} from '../../redux/profile-reducer'
+import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
+import {compose} from "redux";
+import {getProfile, getStatus} from "../../redux/profile-selectors";
+import {getIsAuth, getUserId} from "../../redux/auth-selectors";
 
 
+class ProfileContainer extends React.PureComponent {
 
+    componentDidMount() {
+        const {getUserProfile, getUserStatus, authUserId} = this.props;
 
-function Profile () {
+        let userId = this.props.match.params.userId;
+        if(!userId){
+            userId = authUserId
+            if(!userId){
+                this.props.history.push("/login");
+            }
+        }
 
-    return (
-        <div className={`${s.profile} `}>
-            <div><img src="/forest.jpg" alt="profile background" /></div>
-            <div className="content-container">
-                
-                <ProfileInfo />
-                <MyPostsContainer/>
+        getUserProfile(userId);
+        getUserStatus(userId);
 
-            </div>
+    }
 
-        </div>
-    );
+    render () {
+
+        return (
+            <Profile
+                {...this.props}
+                profile={this.props.profile}
+                status={this.props.status}
+                updateUserStatus={this.props.updateUserStatus}
+            />
+        )
+    }
 }
 
-export default Profile;
+
+let mapStateToProps = (state) => ({
+    profile: getProfile(state),
+    status: getStatus(state),
+    isAuth: getIsAuth(state),
+    authUserId: getUserId(state)
+});
+
+
+
+
+export default compose(
+    connect(mapStateToProps,{getUserProfile,getUserStatus,updateUserStatus}),
+    withRouter,
+)(ProfileContainer)

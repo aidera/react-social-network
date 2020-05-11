@@ -41,20 +41,20 @@ class Status extends React.Component {
         return (
             <div>
                 {!this.state.editMode &&
-                    <div onDoubleClick={this.activateEditMode} className={s.statusBlock}>
-                        {this.state.status || '------'}
-                    </div>
+                <div onDoubleClick={this.activateEditMode} className={s.statusBlock}>
+                    {this.state.status || '------'}
+                </div>
                 }
                 {this.state.editMode &&
-                    <div className={s.statusBlock}>
-                        <input
-                            onChange={this.onStatusChange}
-                            autoFocus={true}
-                            onBlur={this.deactivateEditMode}
-                            type="text"
-                            value={this.state.status}
-                        />
-                    </div>
+                <div className={s.statusBlock}>
+                    <input
+                        onChange={this.onStatusChange}
+                        autoFocus={true}
+                        onBlur={this.deactivateEditMode}
+                        type="text"
+                        value={this.state.status}
+                    />
+                </div>
                 }
             </div>
         )

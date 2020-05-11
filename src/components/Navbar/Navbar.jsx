@@ -1,9 +1,8 @@
 import React from 'react';
 import s from './Navbar.module.sass';
 import {NavLink} from 'react-router-dom';
-// import Friends from './Friends/Friends';
 
-function Navbar (props) {
+const Navbar = React.memo( (props) => {
 
     return (
         <div className={s.navbar}>
@@ -21,6 +20,6 @@ function Navbar (props) {
 
         </div>
     );
-}
+});
 
 export default Navbar;
