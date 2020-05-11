@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "1053a68f14aaff4275458f9ef3c77ef9",
+    "revision": "d675d5ac0917006e765c11df11e1717f",
     "url": "/react-training__way-of-samurai__it-kamasutra__social-network/index.html"
   },
   {
@@ -32,7 +32,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/react-training__way-of-samurai__it-kamasutra__social-network/static/css/9.5c555c10.chunk.css"
   },
   {
-    "revision": "7b623e40996078a81551",
+    "revision": "edefad88a0a131e2d289",
     "url": "/react-training__way-of-samurai__it-kamasutra__social-network/static/css/main.31cc6e0f.chunk.css"
   },
   {
@@ -76,8 +76,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/9.06c450d1.chunk.js"
   },
   {
-    "revision": "7b623e40996078a81551",
-    "url": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/main.f61e1429.chunk.js"
+    "revision": "edefad88a0a131e2d289",
+    "url": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/main.d02dda53.chunk.js"
   },
   {
     "revision": "c82848c6251a541f833f",

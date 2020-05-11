@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/react-training__way-of-samurai__it-kamasutra__social-network/precache-manifest.ea6976fb426d7060e594158fc7754d0f.js"
+  "/react-training__way-of-samurai__it-kamasutra__social-network/precache-manifest.2bbeb58bc37ae2ed54781958b12090a4.js"
 );
 
 self.addEventListener('message', (event) => {

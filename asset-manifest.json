@@ -3,8 +3,8 @@
     "static/js/0.06245512.chunk.js": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/0.06245512.chunk.js",
     "static/js/0.06245512.chunk.js.map": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/0.06245512.chunk.js.map",
     "main.css": "/react-training__way-of-samurai__it-kamasutra__social-network/static/css/main.31cc6e0f.chunk.css",
-    "main.js": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/main.f61e1429.chunk.js",
-    "main.js.map": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/main.f61e1429.chunk.js.map",
+    "main.js": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/main.d02dda53.chunk.js",
+    "main.js.map": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/main.d02dda53.chunk.js.map",
     "runtime-main.js": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/runtime-main.d7b9d839.js",
     "runtime-main.js.map": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/runtime-main.d7b9d839.js.map",
     "static/js/3.c4d9e33b.chunk.js": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/3.c4d9e33b.chunk.js",
@@ -31,7 +31,7 @@
     "static/js/10.16ba0dfa.chunk.js": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/10.16ba0dfa.chunk.js",
     "static/js/10.16ba0dfa.chunk.js.map": "/react-training__way-of-samurai__it-kamasutra__social-network/static/js/10.16ba0dfa.chunk.js.map",
     "index.html": "/react-training__way-of-samurai__it-kamasutra__social-network/index.html",
-    "precache-manifest.ea6976fb426d7060e594158fc7754d0f.js": "/react-training__way-of-samurai__it-kamasutra__social-network/precache-manifest.ea6976fb426d7060e594158fc7754d0f.js",
+    "precache-manifest.2bbeb58bc37ae2ed54781958b12090a4.js": "/react-training__way-of-samurai__it-kamasutra__social-network/precache-manifest.2bbeb58bc37ae2ed54781958b12090a4.js",
     "service-worker.js": "/react-training__way-of-samurai__it-kamasutra__social-network/service-worker.js",
     "static/css/10.896ea601.chunk.css.map": "/react-training__way-of-samurai__it-kamasutra__social-network/static/css/10.896ea601.chunk.css.map",
     "static/css/4.0b612c4d.chunk.css.map": "/react-training__way-of-samurai__it-kamasutra__social-network/static/css/4.0b612c4d.chunk.css.map",
@@ -49,6 +49,6 @@
     "static/js/runtime-main.d7b9d839.js",
     "static/js/3.c4d9e33b.chunk.js",
     "static/css/main.31cc6e0f.chunk.css",
-    "static/js/main.f61e1429.chunk.js"
+    "static/js/main.d02dda53.chunk.js"
   ]
 }
