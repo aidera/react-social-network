@@ -1,6 +1,6 @@
 import React, {Suspense} from 'react';
 import './App.sass';
-import {BrowserRouter, Route, withRouter} from 'react-router-dom';
+import {BrowserRouter, Redirect, Route, Switch, withRouter} from 'react-router-dom';
 import {connect, Provider} from "react-redux";
 import {compose} from "redux";
 import {initializeApp} from "./redux/app-reducer";
@@ -9,14 +9,8 @@ import store from "./redux/redux-store";
 import Preloader from "./components/common/Preloader/Preloader";
 import HeaderContainer from './components/Header/HeaderContainer'
 import Navbar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
 
-// import ProfileContainer from './components/Profile/ProfileContainer';
-// import DialogsContainer from './components/Dialogs/DialogsContainer';
-// import UsersContainer from './components/Users/UsersContainer';
-// import LoginContainer from "./components/Login/LoginContainer";
-// import News from './components/News/News';
-// import Music from './components/Music/Music';
-// import Settings from './components/Settings/Settings';
 
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
@@ -25,56 +19,88 @@ const LoginContainer = React.lazy(() => import('./components/Login/LoginContaine
 const News = React.lazy(() => import('./components/News/News'));
 const Music = React.lazy(() => import('./components/Music/Music'));
 const Settings = React.lazy(() => import('./components/Settings/Settings'));
+const ErrorContent = React.lazy(() => import('./components/ErrorContent/ErrorContent'));
 
 
 class App extends React.Component {
 
+    catchAllUnhandledErrors = (reason, promise) => {
+        alert('Some error occured');
+    }
 
     componentDidMount() {
         this.props.initializeApp();
+        window.addEventListener('unhandledrejection', this.catchAllUnhandledErrors);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('unhandledrejection', this.catchAllUnhandledErrors);
     }
 
 
-    render(){
-        if(!this.props.initialized){
-            return <Preloader />
+    render() {
+        if (!this.props.initialized) {
+            return <Preloader/>
         }
 
 
         return (
 
             <div className='app-wrapper'>
-                <HeaderContainer />
-                <Navbar />
+                <HeaderContainer/>
 
-                <div className="app-wrapper-content">
 
-                    <Suspense fallback={<Preloader/>}>
+                <div className="app-wrapper-width" >
+                    <div className="app-wrapper-content">
 
-                        <Route path='/dialogs'
-                               render={() => <DialogsContainer />}/>
+                        <Navbar/>
+                        <div className="content-container">
+                            <Suspense fallback={<Preloader/>}>
 
-                        <Route path='/profile/:userId?'
-                            render={() => <ProfileContainer />}/>
+                                <Switch>
 
-                        <Route exact path='/users'
-                               render={() => <UsersContainer /> }/>
+                                    <Route path='/dialogs'
+                                           render={() => <DialogsContainer/>}/>
 
-                        <Route exact path='/login'
-                               render={() => <LoginContainer />} />
+                                    <Route path='/profile/:userId?'
+                                           render={() => <ProfileContainer/>}/>
 
-                        <Route exact path='/news'
-                               render={() => <News />} />
+                                    <Route path='/users'
+                                           render={() => <UsersContainer/>}/>
 
-                        <Route exact path='/music'
-                               render={() => <Music />} />
+                                    <Route path='/login'
+                                           render={() => <LoginContainer/>}/>
 
-                        <Route exact path='/settings'
-                               render={() => <Settings />} />
+                                    <Route path='/news'
+                                           render={() => <News/>}/>
 
-                    </Suspense>
+                                    <Route path='/music'
+                                           render={() => <Music/>}/>
 
+                                    <Route path='/settings'
+                                           render={() => <Settings/>}/>
+
+                                    <Route exact path='/'> <Redirect to='/profile'/> </Route>
+
+                                    <Route path='*'
+                                           render={() => <ErrorContent
+                                               errorType={404}
+                                               h1={'Page not found'}
+                                               h2={'Sorry, we have lost this page, but... our best detectives are already looking for it!'}
+                                               linkUrl={'/users'}
+                                               linkText={'Get another try'}
+                                               />}
+                                    />
+
+                                </Switch>
+
+                            </Suspense>
+                        </div>
+
+                    </div>
                 </div>
+
+                <Footer />
 
             </div>
 
@@ -89,14 +115,14 @@ let mapStateToProps = (state) => ({
 })
 const AppContainer = compose(
     withRouter,
-    connect(mapStateToProps,{initializeApp})
+    connect(mapStateToProps, {initializeApp})
 )(App)
 
 const SamuraiJSApp = (props) => {
     return (
         <BrowserRouter>
             <Provider store={store}>
-                <AppContainer />
+                <AppContainer/>
             </Provider>
         </BrowserRouter>
     );

@@ -9,7 +9,8 @@ let state = {
         {id: 4, likesCount: 40, text: 'Jetxc jjsd ddffddf'},
     ],
     profile: null,
-    status: ''
+    status: '',
+
 };
 
 

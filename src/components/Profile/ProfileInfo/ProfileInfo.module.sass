@@ -3,24 +3,64 @@
 .profileInfo
     display: grid
     grid-template-columns: 1fr 3fr
-    align-items: center
-    .avatar
+    grid-gap: 20px
+    @media (max-width: 600px)
+        display: block
+
+    .photos
         position: relative
-        width: 200px
-        height: 200px
-        border-radius: 100px
-        overflow: hidden
-        .img
+        text-align: center
+        user-select: none
+        .avatar
+            position: relative
+            width: 200px
+            height: 200px
+            overflow: hidden
+            display: inline-block
+            .img
+                position: absolute
+                width: 100%
+                height: 100%
+                background-position: center center
+                background-repeat: no-repeat
+                background-size: cover
+        input
+            display: none
+        label
             position: absolute
-            width: 100%
-            height: 100%
-            background-position: center center
-            background-repeat: no-repeat
-            background-size: cover
+            background-color: gray
+            border-radius: 3px
+            width: 30px
+            height: 30px
+            padding: 5px
+            cursor: pointer
+            right: 5px
+            top: 5px
+            //opacity: 0
+            transition: 0.5s
+            &:hover
+                background-color: $brand-color1
+            img
+                width: 100%
+                height: 100%
+
+        .imgFormError
+            color: red
+            font-size: $font-simple_small
+            font-weight: bolder
+
+
     .description
+        width: 100%
+        max-width: 100%
+        @media (max-width: 600px)
+            margin-top: 30px
         h1
             font-size: $font-header_normal
             line-height: $font-header_normal
-        ul
-            padding-left: 20px
             display: block
+            max-width: 100%
+        span
+            display: block
+            max-width: 100%
+            word-break: break-word

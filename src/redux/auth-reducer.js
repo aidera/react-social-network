@@ -1,7 +1,10 @@
-import {authAPI} from "../api/api";
-import {stopSubmit} from "redux-form";
+import {authAPI, securityAPI} from "../api/api";
+
 
 const SET_AUTH_USER_DATA = 'auth/SET_AUTH_USER_DATA';
+const GET_CAPTCHA_URL = 'auth/GET_CAPTCHA_URL';
+const DELETE_CAPTCHA = 'auth/DELETE_CAPTCHA';
+const SET_IS_LOADING = 'auth/SET_IS_LOADING';
 
 
 
@@ -9,7 +12,9 @@ let initialState = {
     userId: null,
     email: null,
     login: null,
-    isAuth: false
+    isAuth: false,
+    captchaUrl: null,
+    isLoading: false
 };
 
 
@@ -19,10 +24,24 @@ const authReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case SET_AUTH_USER_DATA:
+        case GET_CAPTCHA_URL:
             return {
                 ...state,
                 ...action.payload
             };
+
+        case DELETE_CAPTCHA:
+            return {
+                ...state,
+                captchaUrl: null
+            };
+
+        case SET_IS_LOADING:
+            return {
+                ...state,
+                isLoading: action.status
+            };
+
 
         default:
             return state;
@@ -33,6 +52,9 @@ const authReducer = (state = initialState, action) => {
 
 
 export const setAuthUserData = (userId, email, login, isAuth) => ({ type: SET_AUTH_USER_DATA, payload: {userId, email, login, isAuth} });
+export const getCaptchaUrlSuccess = (captchaUrl) => ({ type: GET_CAPTCHA_URL, payload: {captchaUrl} });
+export const deleteCaptcha = () => ({ type: DELETE_CAPTCHA });
+export const setIsLoading = (status) => ({ type: SET_IS_LOADING, status });
 
 export const checkAuth = () => async (dispatch) => {
     const response = await authAPI.checkAuth()
@@ -44,15 +66,31 @@ export const checkAuth = () => async (dispatch) => {
 
 }
 
-export const login = (email, password, rememberMe) => async (dispatch) => {
-    const response = await authAPI.login(email, password, rememberMe)
+export const login = (email, password, rememberMe, captcha) => async (dispatch) => {
+    dispatch(setIsLoading(true));
+
+    const response = await authAPI.login(email, password, rememberMe, captcha)
 
     if(response.data.resultCode === 0){
-        dispatch(checkAuth());
+        await dispatch(checkAuth());
+        dispatch(deleteCaptcha());
+        dispatch(setIsLoading(false));
+        return Promise.resolve(null);
     }else{
-        let message = response.data.messages.length > 0 ? response.data.messages[0] : 'Common error';
-        dispatch(stopSubmit('login', {_error: message}));
+        if (response.data.resultCode === 10){
+            await dispatch(getCaptchaUrl());
+        }
+        let message = response.data.messages.length > 0 ? response.data.messages[0] : 'Server error. Please, try later';
+        dispatch(setIsLoading(false));
+        return Promise.reject(message);
     }
+
+}
+
+export const getCaptchaUrl = () => async (dispatch) => {
+    const response = await securityAPI.getCaptchaUrl();
+    const captcha = response.data.url;
+    dispatch(getCaptchaUrlSuccess(captcha));
 
 }
 

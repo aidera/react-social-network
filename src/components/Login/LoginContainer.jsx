@@ -1,16 +1,16 @@
 import React from "react";
 import Login from './Login';
-import {login} from '../../redux/auth-reducer'
+import {login, setIsLoading} from '../../redux/auth-reducer'
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
-import {getIsAuth} from "../../redux/auth-selectors";
+import {getIsAuth, getCaptchaUrl, getIsLoading} from "../../redux/auth-selectors";
 
 
 
 class LoginContainer extends React.PureComponent {
 
     render () {
-        const {isAuth, login} = this.props;
+        const {isAuth, login, captchaUrl,isLoading} = this.props;
 
         if(isAuth){
             return <Redirect to={'/profile'}/>
@@ -18,6 +18,8 @@ class LoginContainer extends React.PureComponent {
         return(
             <Login
                 login={login}
+                captchaUrl={captchaUrl}
+                isLoading={isLoading}
             />
         )
 
@@ -26,10 +28,13 @@ class LoginContainer extends React.PureComponent {
 
 
 let mapStateToProps = (state) =>( {
-    isAuth: getIsAuth(state)
+    isAuth: getIsAuth(state),
+    captchaUrl: getCaptchaUrl(state),
+    isLoading: getIsLoading(state)
 });
 let mapDispatchToProps = {
-    login
+    login,
+    setIsLoading
 };
 
 export default connect(mapStateToProps,mapDispatchToProps)(LoginContainer);

@@ -1,0 +1,37 @@
+@import ../../../_variables
+
+
+.inputBox
+    position: relative
+    .simpleInput
+        padding: 3px
+        border: 1px solid gray
+        resize: none
+
+    .maxLength
+        color: gray
+        font-size: 10px
+        font-weight: bolder
+        position: absolute
+        bottom: -20px
+        right: 0px
+        &.error
+            color: red
+
+    .fieldError
+        color: red
+        font-size: $font-simple_small
+        font-weight: bolder
+
+    label
+        cursor: pointer
+        user-select: none
+
+    .checkboxInput
+        input
+            display: inline-block
+
+
+
+
+

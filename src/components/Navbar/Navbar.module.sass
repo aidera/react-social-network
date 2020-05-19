@@ -2,19 +2,31 @@
     
 .navbar
     grid-area: n
-    background-color: #B66965
+    user-select: none
     nav
+        position: sticky
+        top: 80px
+        @media (max-width: 700px)
+            position: relative
+            top: 0
+            text-align: center
+            width: 100%
+            margin-bottom: 20px
         a
-            color: white
+            color: $brand-color1
             padding: 10px
             display: block
             cursor: pointer
             text-align: center
-            transition: 0.5s
+            transition: 0.2s
+            @media (max-width: 700px)
+                display: inline-block
+                font-weight: bolder
             &:hover
                 letter-spacing: 1px
             &.active
-                color: #E5CD54
+                color: $brand-color2
+                font-weight: bolder
 
 
 

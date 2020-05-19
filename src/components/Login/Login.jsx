@@ -1,68 +1,106 @@
 import React from 'react';
 import s from './Login.module.sass'
-import {Field, reduxForm} from "redux-form";
-import {Input} from "../common/FormsControls/FormsControls";
-import {maxLengthCreator, required} from "../../utils/validators/validators";
+import * as Yup from "yup";
+import {CustomField} from "../common/FormsControls/CustomFormControls";
+import {Form, Formik} from "formik";
+import cn from 'classnames';
+import PreloaderSmall from "../common/PreloaderSmall/PreloaderSmall";
 
 
-let maxLength40 = maxLengthCreator(40);
+const Login = React.memo(({login, captchaUrl, isLoading, setIsLoading, ...props}) => {
 
-
-const LoginForm = React.memo(({handleSubmit, error, ...props}) => {
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <Field
-                    component={Input}
-                    name={'login'}
-                    placeholder={'Login'}
-                    validate={[required, maxLength40]}
-                />
-            </div>
-            <div>
-                <Field
-                    component={Input}
-                    name={'password'}
-                    placeholder={'Password'}
-                    type={'password'}
-                    validate={[required, maxLength40]}
-                />
-            </div>
-            <div>
-                <Field
-                    component={"input"}
-                    name={'rememberMe'}
-                    type={'checkbox'}
-                /> remember me
-            </div>
-            <div className={s.formSummaryError}>{error}</div>
-            <div>
-                <button className='button'>Login</button>
-            </div>
-        </form>
-    )
-});
-
-const LoginReduxForm = reduxForm({
-    form: 'login'
-})(LoginForm)
-
-
-
-
-const Login = ({login, ...props}) => {
-
-    const onSubmit = (formData) => {
-        login(formData.login,formData.password,formData.rememberMe)
-
-    }
 
     return (
         <div className={s.loginPage}>
             <h1>Login</h1>
-            <LoginReduxForm onSubmit={onSubmit} />
+
+            <Formik
+                initialValues={{
+                    login: '',
+                    password: '',
+                    rememberMe: true,
+                    captcha: ''
+                }}
+                validationSchema={Yup.object({
+                    login: Yup.string()
+                        .required('Required'),
+                    password: Yup.string()
+                        .required('Required'),
+
+                })}
+                onSubmit={(values, actions) => {
+                    login(values.login, values.password, values.rememberMe, values.captcha)
+                        .catch(error => {
+                            actions.setFieldError('general', error);
+                        })
+                }}
+            >
+                {formik => {
+                    return (
+                        <Form>
+                            <div className={s.inputGroup}>
+                                <CustomField
+                                    fieldType={'input'}
+                                    name={'login'}
+                                    placeholder={'Login'}
+                                />
+                            </div>
+                            <div className={s.inputGroup}>
+                                <CustomField
+                                    fieldType={'input'}
+                                    name={'password'}
+                                    placeholder={'Password'}
+                                    type={'password'}
+                                />
+                            </div>
+                            <div className={s.inputGroup}>
+                                <CustomField
+                                    name={'rememberMe'}
+                                    id={'rememberMe'}
+                                    label={'remember me'}
+                                    fieldType={'checkbox'}
+                                />
+                            </div>
+
+                            {captchaUrl && <img src={captchaUrl} alt="captcha"/>}
+                            {captchaUrl &&
+                            <div className={s.inputGroup}>
+                                <CustomField
+                                    fieldType={'input'}
+                                    name={'captcha'}
+                                />
+                            </div>
+                            }
+
+                            {formik.errors.general ? <div className={s.formSummaryError}>{formik.errors.general}</div> : null}
+
+                            <div>
+                                {!isLoading &&
+                                    <button type={'submit'} className={cn('button', 'button-success')}>Login</button>
+                                }
+                                {!!isLoading &&
+                                    <PreloaderSmall />
+                                }
+                            </div>
+                        </Form>
+
+                    );
+                }}
+
+
+            </Formik>
+
+            <div className={s.testAccountContainer}>
+                <h2>Hey, looking for a test account?</h2>
+                <span>Use this one: </span>
+                <i>free@samuraijs.com</i>
+                <i>free</i>
+                <br/>
+                <span>Or create your own in</span>
+                <i><a rel="noopener noreferrer" target={'_blank'} href="https://social-network.samuraijs.com/">https://social-network.samuraijs.com/</a></i>
+            </div>
         </div>
     )
-}
+})
 
 export default Login;
