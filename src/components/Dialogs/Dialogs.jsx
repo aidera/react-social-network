@@ -3,7 +3,6 @@ import s from './Dialogs.module.sass';
 import Dialog from './Dialog/Dialog';
 import Message from './Message/Message';
 import {Field, reduxForm} from "redux-form";
-import {Textarea} from "../common/FormsControls/FormsControls";
 import {maxLengthCreator, required} from "../../utils/validators/validators";
 
 
@@ -46,12 +45,12 @@ const SendMessageForm = React.memo(({handleSubmit, ...props}) => {
     return (
         <form onSubmit={handleSubmit}>
             <div className={s.sendMessageBlock}>
-                    <Field
-                        name={'sendMessageTextarea'}
-                        component={Textarea}
-                        placeholder={'write your message'}
-                        validate={[required,maxLength100]}
-                    />
+                    {/*<Field*/}
+                    {/*    name={'sendMessageTextarea'}*/}
+                    {/*    component={Textarea}*/}
+                    {/*    placeholder={'write your message'}*/}
+                    {/*    validate={[required,maxLength100]}*/}
+                    {/*/>*/}
                 <button
                     className='button'
                 >Send</button>

@@ -5,6 +5,8 @@ import anime from 'animejs';
 import PreloaderSmall from "../PreloaderSmall/PreloaderSmall";
 
 
+/* Modal windows that can be without buttons, with 1 resolve/reject button or 2 buttons */
+/* Made with class component because of show-animation in beginning and loading state inside */
 
 class Modal extends React.PureComponent{
 
@@ -31,8 +33,7 @@ class Modal extends React.PureComponent{
     }
 
 
-
-
+    /* Helpers */
     showModal = () => {
         anime({
             targets: this.state.modal,
@@ -45,7 +46,6 @@ class Modal extends React.PureComponent{
             loop: false,
         });
     }
-
 
     closeModal = () => {
         anime({
@@ -66,6 +66,10 @@ class Modal extends React.PureComponent{
         });
     }
 
+
+
+
+    /* Actions */
     cancelModal = () => {
         this.setState({
             isLoading: true

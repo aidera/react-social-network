@@ -93,8 +93,8 @@ const Login = React.memo(({login, captchaUrl, isLoading, setIsLoading, ...props}
             <div className={s.testAccountContainer}>
                 <h2>Hey, looking for a test account?</h2>
                 <span>Use this one: </span>
-                <i>free@samuraijs.com</i>
-                <i>free</i>
+                <i>hope.aidera@gmail.com</i>
+                <i>Qn2bGpN_qGxtZKq</i>
                 <br/>
                 <span>Or create your own in</span>
                 <i><a rel="noopener noreferrer" target={'_blank'} href="https://social-network.samuraijs.com/">https://social-network.samuraijs.com/</a></i>

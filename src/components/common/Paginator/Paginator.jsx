@@ -16,7 +16,7 @@ const Paginator = React.memo(({currentPage, pagesCount, onPageChange, ...props})
 
 
     let pages = [];
-    let maxPages = 6;
+    let maxPages = 8;
 
 
     if(pagesCount > 1){

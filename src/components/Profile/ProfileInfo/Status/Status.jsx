@@ -8,6 +8,8 @@ import {CustomField} from "../../../common/FormsControls/CustomFormControls";
 
 
 
+/* Status demonstration and status redactor */
+/* No buttons submit. Used onBlur submit and onClick edit mode activation. Also with ESC button edit mode will off */
 const Status = React.memo(({
                                status,
                                updateUserStatus,
@@ -17,7 +19,7 @@ const Status = React.memo(({
 
 
 
-
+    /* Edit mode for status redactor */
     let [editMode, setEditMode] = useState(false);
     let [localStatus, setLocalStatus] = useState(status);
 

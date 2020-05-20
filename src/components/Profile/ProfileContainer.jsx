@@ -22,6 +22,7 @@ import {getIsAuth, getUserId} from "../../redux/auth-selectors";
 
 class ProfileContainer extends React.PureComponent {
 
+    /* Checking for userId in URL. If it's not - take userId in auth or redirect to login page */
     refreshProfile = () => {
         const {getUserProfile, authUserId} = this.props;
 

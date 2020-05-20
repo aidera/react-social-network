@@ -5,7 +5,7 @@ import {getPosts,getLikedPosts} from "../../../redux/posts-selectors";
 import {getIsAuth} from "../../../redux/auth-selectors";
 
 
-
+/* We need auth to show/hide such buttons like "delete post" and "like"/"dislike" */
 let mapStateToProps = (state) => {
     return {
         posts: getPosts(state),

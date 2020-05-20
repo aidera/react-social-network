@@ -4,7 +4,12 @@ import defaultUserPhoto from '../../../assets/images/default-user.png';
 import {NavLink} from 'react-router-dom';
 import Preloader from "../../common/Preloader/Preloader";
 
-let User = ({state, follow, unfollow, followingInProgress, ...props}) => {
+const User = React.memo(({
+                             state,
+                             follow,
+                             unfollow,
+                             followingInProgress,
+                             ...props}) => {
 
 
     let userImage = state.photos.small != null ? state.photos.small : defaultUserPhoto;
@@ -30,6 +35,6 @@ let User = ({state, follow, unfollow, followingInProgress, ...props}) => {
             </div>
         </div>
     );
-}
+})
 
 export default User;

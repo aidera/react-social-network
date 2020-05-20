@@ -2,6 +2,8 @@ import React from 'react';
 import {Redirect} from "react-router-dom";
 import {connect} from "react-redux";
 
+/* Use this hoc to pages you want to protect from non-auth users */
+
 let mapStateToProps = (state) => ({
     isAuth: state.auth.isAuth
 })

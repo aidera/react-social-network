@@ -6,12 +6,13 @@ import autosize from "autosize";
 
 
 
+/* Templates to FORMIK forms: input[text], textarea, input[checkbox] + labels and errors */
 
 export const CustomField = ({ label, fieldType, ...props }) => {
+
     const [field, meta] = useField(props);
 
-
-
+    /* Plugin that allows <textarea> increase it's height when user make new lines by typing */
     const textareaResize = (e) => {
         fieldType === 'textarea' && autosize(e)
     }
@@ -19,7 +20,6 @@ export const CustomField = ({ label, fieldType, ...props }) => {
     useEffect(() => {
         textareaResize(document.getElementsByClassName(s.simpleInput))
     })
-
 
 
     return (
@@ -50,26 +50,8 @@ export const CustomField = ({ label, fieldType, ...props }) => {
             {meta.error && meta.touched ? (
                 <div className={s.fieldError}>{meta.error}</div>
             ) : null}
+
         </div>
     );
 }
 
-
-
-// const Checkbox = ({ children, ...props }) => {
-//     // We need to tell useField what type of input this is
-//     // since React treats radios and checkboxes differently
-//     // than inputs/select/textarea.
-//     const [field, meta] = useField({ ...props, type: 'checkbox' });
-//     return (
-//         <>
-//             <label className="checkbox">
-//                 <input type="checkbox" {...field} {...props} />
-//                 {children}
-//             </label>
-//             {meta.touched && meta.error ? (
-//                 <div className="error">{meta.error}</div>
-//             ) : null}
-//         </>
-//     );
-// };

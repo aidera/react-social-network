@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import s from './ProfileInfo.module.sass';
 import Status from './Status/Status'
 import profileImgDefault from '../../../assets/images/default-user.png'
@@ -7,6 +7,9 @@ import ProfileData from "./ProfileData/ProfileData";
 import {Form, Formik} from "formik";
 import Preloader from "../../common/Preloader/Preloader";
 
+
+
+/* Connect status, user information and avatar (avatar edits here) */
 const ProfileInfo = React.memo(({
                                     profile,
                                     profileRef,
@@ -20,19 +23,6 @@ const ProfileInfo = React.memo(({
                                     saveProfileInfo,
                                     ...props}) => {
 
-    let [contactsCount, setContactsCount] = useState(0);
-
-
-    useEffect(() => {
-        let contacts = 0;
-        Object.keys(profile.contacts).forEach((keyName, i) => {
-            if (profile.contacts[keyName] != null) {
-                contacts++;
-            }
-        })
-        setContactsCount(contacts);
-    }, [profile.contacts, contactsCount])
-
 
 
 
@@ -40,6 +30,8 @@ const ProfileInfo = React.memo(({
     return (
 
         <div className={s.profileInfo}>
+
+            {/*Avatar and it's edit mode*/}
             <div className={s.photos}>
                 <Formik
                     initialValues={{
@@ -84,6 +76,9 @@ const ProfileInfo = React.memo(({
             </div>
 
 
+
+
+            {/*Status and information connects*/}
             <div className={s.description}>
                 <h1>{profile.fullName}</h1>
                 <Status

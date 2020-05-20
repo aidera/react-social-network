@@ -5,33 +5,42 @@ import Preloader from './../common/Preloader/Preloader';
 import Paginator from '../common/Paginator/Paginator';
 
 
-let Users = React.memo(({onPageChange, currentPage, pagesCount, isFetching, users, follow, unfollow, followingInProgress, ...props}) => {
+const Users = React.memo(({
+                              onPageChange,
+                              currentPage,
+                              pagesCount,
+                              isFetching,
+                              users,
+                              follow,
+                              unfollow,
+                              followingInProgress,
+                              ...props}) => {
 
 
     return (
         <>
             {isFetching === false ?
                 <div className={s.usersPage}>
-                <h1>Users</h1>
-                <div className={s.buttons}>
+                    <h1>Users</h1>
+                    <div className={s.buttons}>
 
-                    <Paginator currentPage={currentPage} pagesCount={pagesCount} onPageChange={onPageChange}  />
+                        <Paginator currentPage={currentPage} pagesCount={pagesCount} onPageChange={onPageChange}  />
 
+                    </div>
+                    {
+                        users.map(user => {
+                                return <User
+                                    key={user.id}
+                                    state={user}
+                                    follow={follow}
+                                    unfollow={unfollow}
+                                    followingInProgress={followingInProgress}
+                                />
+                            }
+                        )
+                    }
                     <button className="button">Get Users</button>
-                </div>
-                {
-                    users.map(user => {
-                            return <User
-                                key={user.id}
-                                state={user}
-                                follow={follow}
-                                unfollow={unfollow}
-                                followingInProgress={followingInProgress}
-                            />
-                        }
-                    )
-                }
-            </div> : <Preloader/>
+                </div> : <Preloader/>
             }
 
 

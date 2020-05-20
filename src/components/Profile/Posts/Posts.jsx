@@ -8,7 +8,9 @@ import Modal from '../../common/Modal/Modal'
 
 
 
-
+/* Modal window used in parent Posts component. Child component Post have functions to call modal with postId parameter */
+/* There is 2 different modal windows: to delete post and to like post without authorization (just redirect to login page) */
+/* Use local state to show/hide modal windows and save postId parameter in modalElementId */
 
 const Posts = React.memo(({
                                         posts,
@@ -28,6 +30,7 @@ const Posts = React.memo(({
     let [modalElementId, setModalElementId] = useState(null);
 
 
+    /* Modal window actions to delete the post */
     const modalCallDeletePost = (id) => {
         setIsModalDeletePostOpen(true);
         setModalElementId(id);
@@ -40,6 +43,7 @@ const Posts = React.memo(({
         })
     }
 
+    /* Modal window actions to like the post */
     const modalCallLikePost = () => {
         setIsModalLikePostOpen(true);
     }
@@ -86,11 +90,9 @@ const Posts = React.memo(({
                     onSubmit={(values, actions) =>  {
 
                         if(values.post.length > 0){
-
                             addPost(values.post);
                             actions.resetForm();
                             // actions.setFieldError('post', error);
-
                         }
 
                     }}
@@ -129,8 +131,7 @@ const Posts = React.memo(({
                         dislikePost={dislikePost}
                         liked={likedPosts.some((number) => number === post.id)}
                         isAuth={isAuth}
-                    >
-                        {post.text}</Post>
+                    >{post.text}</Post>
                 ))}
             </div>
         </div>

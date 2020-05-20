@@ -151,16 +151,23 @@ export const savePhoto = (file) => async (dispatch) => {
 };
 
 export const saveProfileInfo = (profile) => async (dispatch, getState) => {
+
     dispatch(setIsLoadingProfileInfoChanges(true));
+
     const userId = await getState().auth.userId;
     const response = await profileAPI.saveProfileInfo(profile);
+
     dispatch(setIsLoadingProfileInfoChanges(false));
 
     if(response.data.resultCode === 0){
-        dispatch(getUserProfile(userId));
+        await dispatch(getUserProfile(userId));
         return Promise.resolve(null);
     }else{
-        return Promise.reject(response.data.messages[0]);
+        if(response.data){
+            return Promise.reject(response.data.messages[0]);
+        }else{
+            return Promise.reject('Server error');
+        }
     }
 
 };

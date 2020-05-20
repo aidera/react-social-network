@@ -8,6 +8,8 @@ import {Form, Formik} from "formik";
 import * as Yup from 'yup';
 
 
+
+/* Information such as name, contacts, about info and etc. (without status and avatar) */
 const ProfileData = React.memo(({
                                     profile,
                                     profileRef,
@@ -18,19 +20,20 @@ const ProfileData = React.memo(({
                                 }) => {
 
 
+
+    /* Edit mode for profile information such as name, contacts, about info and etc. (without status and avatar) */
     let [editMode, setEditMode] = useState(false);
 
 
-    const scrollToRef = (ref) => {
-        window.scrollTo(20, ref.current.offsetTop);
-    }
+
 
     const onEditModeChange = (status) => {
-        scrollToRef(profileRef);
         setEditMode(status);
-
     }
 
+
+
+    /* Validate contacts in it's object */
     let contactsValidationSchema = {};
     Object.keys(profile.contacts).forEach((key, i) => {
         contactsValidationSchema[key] = Yup.string().url('This url is not correct. The right example: https://google.com')
@@ -40,6 +43,9 @@ const ProfileData = React.memo(({
 
     return (
         <div>
+
+            {/* Information demonstration (edit mode off) */}
+
             {!editMode &&
             <div className={s.showProfileInfo}>
                 <span><b>Looking for a job:</b> <p>{profile.lookingForAJob === true ? 'yes' : 'no'}</p></span>
@@ -56,6 +62,10 @@ const ProfileData = React.memo(({
             </div>
             }
 
+
+
+
+            {/* Editing with redactor (edit mode on). We should be authorized and be in our own page */}
 
             {isOwner &&
             <>
@@ -84,14 +94,17 @@ const ProfileData = React.memo(({
                         )
 
                     })}
+
                     onSubmit={(values, actions) => {
+
                         saveProfileInfo(values)
-                            .then(() => {
-                                scrollToRef(profileRef);
+                            .then(()=>{
+                                return window.scrollTop;
                             })
-                            .catch(error => {
+                            .catch((error) => {
                                 actions.setFieldError('general', error);
                             })
+
                     }}
 
                 >

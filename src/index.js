@@ -3,15 +3,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from "./App";
-// import Test from './Test'
 
 
 
 ReactDOM.render(
-    // <React.StrictMode>
+    <React.StrictMode>
         <App />,
-    //     <Test />,
-    // </React.StrictMode>,
+    </React.StrictMode>,
     document.getElementById('root')
 );
 

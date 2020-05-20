@@ -18,6 +18,7 @@ const Profile = React.memo( ({
                                  ...props}) => {
 
 
+    /* Check profile obj to show error if needed */
     if(profile === null) {
         return <Preloader />
     }
@@ -32,10 +33,9 @@ const Profile = React.memo( ({
         />
     }
 
-    const profileRef = React.createRef();
 
     return (
-        <div className={s.profile} ref={profileRef}>
+        <div className={s.profile}>
             <div>
                 
                 <ProfileInfo
@@ -48,7 +48,6 @@ const Profile = React.memo( ({
                     isOwner={isOwner}
                     savePhoto={savePhoto}
                     saveProfileInfo={saveProfileInfo}
-                    profileRef={profileRef}
                 />
                 <PostsContainer
                     userPhoto={profile.photos.large}
