@@ -5,3 +5,7 @@ export const getMessages = (state) => {
 export const getDialogs = (state) => {
     return state.dialogsPage.dialogs;
 }
+
+export const getUsers = (state) => {
+    return state.dialogsPage.users;
+}

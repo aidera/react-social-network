@@ -37,7 +37,7 @@ const ProfileInfo = React.memo(({
                     initialValues={{
                         avatar: null
                     }}
-                    onSubmit={(values, actions, ...props) => { // если сработала функция handleSubmit
+                    onSubmit={(values, actions, ...props) => {
                         savePhoto(values.avatar)
                             .catch((error) => {
                                 actions.setFieldError('general', error);

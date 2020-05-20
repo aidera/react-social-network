@@ -1,11 +1,32 @@
 @import ../../../_variables
 
 .message
+    display: block
     
     .messageInnerContainer
-        border: 1px solid lightgray
         border-radius: 10px
-        background-color: #D4D4D4
+        align-self: flex-end
+        background-color: #C8EEE4
         padding: 10px
         display: inline-block
         margin: 5px
+        word-wrap: break-word
+        white-space: pre-wrap
+        max-width: 80%
+        min-width: 20%
+        text-align: left
+        box-shadow: $box-shadow-template1
+
+        .messageFrom
+            font-size: $font-simple_small
+            font-weight: 600
+
+        .time
+            text-align: right
+            font-size: $font-simple_small
+
+
+    &.myMessage
+        text-align: right
+        .messageInnerContainer
+            background-color: lightgrey

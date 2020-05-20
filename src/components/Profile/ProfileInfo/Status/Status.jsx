@@ -29,12 +29,6 @@ const Status = React.memo(({
     }
 
 
-    const cancelStatus = (e) => {
-        if(e.key === 'Escape'){
-            changeEditMode(false);
-            setLocalStatus(status);
-        }
-    }
 
 
 
@@ -90,11 +84,22 @@ const Status = React.memo(({
                             <div className={s.statusBlock}>
                                 <CustomField
                                     maxLength={300}
-                                    onKeyDown={cancelStatus}
                                     fieldType={'textarea'}
                                     name={'status'}
                                     autoFocus={true}
                                     onBlur={formik.handleSubmit}
+                                    onKeyDown={(e)=>{
+                                        if(e.key === 'Enter') {
+                                            if(!e.shiftKey) {
+                                                e.preventDefault();
+                                                formik.handleSubmit()
+                                            }
+                                        }
+                                        if(e.key === 'Escape'){
+                                            changeEditMode(false);
+                                            setLocalStatus(status);
+                                        }
+                                    }}
                                 />
                                 {formik.errors.general ? <div>{formik.errors.general}</div> : null}
                             </div>

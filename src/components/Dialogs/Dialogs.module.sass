@@ -1,27 +1,85 @@
 @import ../../_variables
 
 .dialogs
-    display: grid
-    grid-template-columns: 1fr 2fr
+    position: relative
+    height: 500px
+    max-height: 100vh
+
+
+
+    .dialogsContainer
+        position: absolute
+        display: grid
+        grid-template-columns: 1fr 2fr
+        grid-template-rows: 1fr 60px
+        grid-template-areas: 'd m' 'd s'
+        grid-auto-rows: minmax(60px, 200px)
+        align-items: start
+        height: 100%
+        width: 100%
+        overflow-y: scroll
+        @media(max-width: 600px)
+            grid-template-areas: 'm m' 's s'
+
+
 
     .dialogsList
-        border-right: 1px solid lightgray
+        grid-area: d
+        position: sticky
+        top: 0
+        background-color: white
+        @media(max-width: 600px)
+            display: none
+
+
+    .messagesList
+        position: relative
+        grid-area: m
+        height: 100%
+        border-left: 1px solid lightgrey
+        display: flex
+        flex-direction: column
+        justify-content: flex-end
+        @media(max-width: 600px)
+            border: none
 
 
     .sendMessageBlock
-        margin-top: 50px
         padding: 10px
+        position: sticky
+        bottom: 0
+        background-color: white
+        grid-area: s
+        width: 100%
+        border-left: 1px solid lightgrey
+
+
         textarea
-            border: 1px solid lightgray
             display: inline-block
             vertical-align: middle
-            height: 60px
-            width: 300px
-            margin-right: 10px
+            min-height: 60px
+            max-height: 150px
+            width: 100%
             padding: 5px
+            padding-right: 60px
         button
-            display: inline-block
-            vertical-align: middle
+            display: block
+            position: absolute
+            top: 50%
+            transform: translateY(-50%)
+            right: 20px
+            border-radius: 50px
+            height: 40px
+            width: 40px
+            text-align: center
+            img
+                position: absolute
+                height: 60%
+                width: 60%
+                top: 50%
+                left: 50%
+                transform: translate(-50%, -50%)
+                margin: 0
     
     
 

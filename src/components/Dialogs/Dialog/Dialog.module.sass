@@ -2,12 +2,25 @@
 
 .dialog
     width: 100%
-    a
-        display: block
+    .user
         width: 100%
         transition: 0.5s
         padding: 10px
+        display: grid
+        grid-template-columns: 1fr 3fr
+        align-items: center
+
+        img
+            display: inline-block
+            width: 50px
+            height: 50px
+            border-radius: 50px
+            margin-right: 10px
+        span
+            display: inline-block
+
         &:hover
             padding-left: 15px
         &.active
-            font-weight: bold
+            span
+                font-weight: 600

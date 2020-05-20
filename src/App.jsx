@@ -25,7 +25,7 @@ const ErrorContent = React.lazy(() => import('./components/ErrorContent/ErrorCon
 class App extends React.Component {
 
     catchAllUnhandledErrors = (reason, promise) => {
-        alert('Some error occured');
+        console.log('Some error occured');
     }
 
     componentDidMount() {
@@ -59,7 +59,7 @@ class App extends React.Component {
 
                                 <Switch>
 
-                                    <Route path='/dialogs'
+                                    <Route path='/dialogs/:userId?'
                                            render={() => <DialogsContainer/>}/>
 
                                     <Route path='/profile/:userId?'

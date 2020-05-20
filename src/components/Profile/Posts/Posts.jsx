@@ -19,7 +19,7 @@ const Posts = React.memo(({
                                         likePost,
                                         dislikePost,
                                         likedPosts,
-                                        userPhoto,
+                                        userPhoto, // Comes from Profile component
                                         isOwner,
                                         isAuth,
                                         ...props}) => {
@@ -104,6 +104,14 @@ const Posts = React.memo(({
                                 fieldType={'textarea'}
                                 name={'post'}
                                 placeholder={'Type something clever :)'}
+                                onKeyDown={(e)=>{
+                                    if(e.key === 'Enter') {
+                                        if(!e.shiftKey) {
+                                            e.preventDefault();
+                                            formik.handleSubmit()
+                                        }
+                                    }
+                                }}
                             />
                             {formik.values.post.length > 0 &&
                             <button type='submit' className={cn('button', 'button-success')}>Add post</button>
@@ -124,7 +132,7 @@ const Posts = React.memo(({
                         key={post.id}
                         postID={post.id}
                         likesCount={post.likesCount}
-                        userPhoto={userPhoto}
+                        userPhoto={userPhoto} // Comes from Profile component
                         modalCallDeletePost={modalCallDeletePost}
                         modalCallLikePost={modalCallLikePost}
                         likePost={likePost}
