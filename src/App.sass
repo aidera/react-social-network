@@ -5,6 +5,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap')
 
 
+
+
+
 *
     font-size: $font-simple_normal
     line-height: $font-simple_normal+8
@@ -113,43 +116,71 @@ h2
 
 
 
-.app-wrapper
-    display: block
-    position: relative
-    margin: 0 auto
-    text-align: center
-    min-height: 100vh
 
-.app-wrapper-width
+
+
+
+// app
+//    - header
+//    - main
+//       - width-wrapper
+//          - content-wrapper
+//             - navbar
+//             - content
+//    - footer
+
+.width-wrapper
     width: 1200px
     text-align: center
     display: inline-block
     margin: 0 auto
-    position: relative
-
     @media (max-width: 1300px)
         width: 1000px
-
     @media (max-width: 1024px)
         width: 95%
 
-.app-wrapper-content
-    display: grid
-    padding-top: 100px
-    grid-template-columns: 1fr 5fr
-    grid-template-areas: 'n c'
-    text-align: left
+
+
+
+
+
+.app
+    min-height: 100vh
+    display: flex
+    flex-direction: column
+    justify-content: space-between
     position: relative
-    grid-gap: 20px
 
-    @media (max-width: 700px)
-        display: block
-        padding-top: 70px
+    .main
+        flex-grow: 1
+        display: flex
 
-.content-container
-    grid-area: c
-    min-height: 90vh
-    padding-bottom: 50px
+        .content-wrapper
+            display: grid
+            padding-top: 100px
+            grid-template-columns: 1fr 5fr
+            grid-template-areas: 'n c'
+            text-align: left
+            position: relative
+            grid-gap: 20px
+            height: 100%
+            flex-grow: 1
+            padding-bottom: 50px
+
+            @media (max-width: 700px)
+                display: flex
+
+
+            .content
+                grid-area: c
+                position: relative
+
+                @media (max-width: 700px)
+                    flex-grow: 1
+
+
+
+
 
 
 

@@ -44,59 +44,73 @@ class App extends React.Component {
         }
 
 
+
+        // app
+        //    - header
+        //    - main
+        //       - width-wrapper
+        //          - content-wrapper
+        //             - navbar
+        //             - content
+        //    - footer
+
+
         return (
 
-            <div className='app-wrapper'>
+            <div className='app'>
+
                 <HeaderContainer/>
 
+                <div className="main">
+                    <div className="width-wrapper" >
+                        <div className="content-wrapper">
 
-                <div className="app-wrapper-width" >
-                    <div className="app-wrapper-content">
+                            <Navbar/>
 
-                        <Navbar/>
-                        <div className="content-container">
-                            <Suspense fallback={<Preloader/>}>
+                            <div className="content">
+                                <Suspense fallback={<Preloader/>}>
 
-                                <Switch>
+                                    <Switch>
 
-                                    <Route path='/dialogs/:userId?'
-                                           render={() => <DialogsContainer/>}/>
+                                        <Route path='/dialogs/:userId?'
+                                               render={() => <DialogsContainer/>}/>
 
-                                    <Route path='/profile/:userId?'
-                                           render={() => <ProfileContainer/>}/>
+                                        <Route path='/profile/:userId?'
+                                               render={() => <ProfileContainer/>}/>
 
-                                    <Route path='/users'
-                                           render={() => <UsersContainer/>}/>
+                                        <Route path='/users'
+                                               render={() => <UsersContainer/>}/>
 
-                                    <Route path='/login'
-                                           render={() => <LoginContainer/>}/>
+                                        <Route path='/login'
+                                               render={() => <LoginContainer/>}/>
 
-                                    <Route path='/news'
-                                           render={() => <News/>}/>
+                                        <Route path='/news'
+                                               render={() => <News/>}/>
 
-                                    <Route path='/music'
-                                           render={() => <Music/>}/>
+                                        <Route path='/music'
+                                               render={() => <Music/>}/>
 
-                                    <Route path='/settings'
-                                           render={() => <Settings/>}/>
+                                        <Route path='/settings'
+                                               render={() => <Settings/>}/>
 
-                                    <Route exact path='/'> <Redirect to='/profile'/> </Route>
+                                        <Route exact path='/'> <Redirect to='/profile'/> </Route>
 
-                                    <Route path='*'
-                                           render={() => <ErrorContent
-                                               errorType={404}
-                                               h1={'Page not found'}
-                                               h2={'Sorry, we have lost this page, but... our best detectives are already looking for it!'}
-                                               linkUrl={'/users'}
-                                               linkText={'Get another try'}
-                                               />}
-                                    />
+                                        <Route path='*'
+                                               render={() => <ErrorContent
+                                                   errorType={404}
+                                                   h1={'Page not found'}
+                                                   h2={'Sorry, we have lost this page, but... our best detectives are already looking for it!'}
+                                                   linkUrl={'/users'}
+                                                   linkText={'Get another try'}
+                                                   />}
+                                        />
 
-                                </Switch>
+                                    </Switch>
 
-                            </Suspense>
+                                </Suspense>
+                            </div>
+
                         </div>
-
                     </div>
                 </div>
 

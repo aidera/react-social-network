@@ -1,87 +1,141 @@
 @import ../../_variables
 
 .dialogs
-    position: relative
-    height: 500px
-    max-height: 100vh
+    position: absolute
+    height: 100%
+    width: 100%
 
 
+
+    .showDialogsList
+        position: fixed
+        left: 0
+        top: 60px
+        padding: 10px
+        background-color: rgba(255,255,255,0.9)
+        z-index: 2
+        cursor: pointer
+        user-select: none
+        width: 100%
+        transition: 0.2s
+        display: none
+        @media(max-width: 700px)
+            display: block
+            left: 200%
+        *
+            display: inline-block
+            vertical-align: middle
+        img
+            width: 20px
+            height: 20px
+            margin-right: 10px
+        span
+            font-size: $font-simple_small
+            font-weight: bolder
 
     .dialogsContainer
-        position: absolute
+        position: relative
         display: grid
         grid-template-columns: 1fr 2fr
-        grid-template-rows: 1fr 60px
+        grid-template-rows: 1fr 80px
         grid-template-areas: 'd m' 'd s'
-        grid-auto-rows: minmax(60px, 200px)
+        grid-auto-rows: minmax(80px, 200px)
         align-items: start
         height: 100%
         width: 100%
         overflow-y: scroll
-        @media(max-width: 600px)
+        background-color: white
+        @media(max-width: 700px)
             grid-template-areas: 'm m' 's s'
+            position: fixed
+            top: 0
+            left: 0
+            padding-top: 70px
+
+
+        .dialogsList
+            grid-area: d
+            position: sticky
+            top: 0
+            background-color: white
+            @media(max-width: 700px)
+                position: fixed
+                top: 0
+                width: 100%
+                height: 100%
+                z-index: 3
+                left: 0
+                overflow-y: scroll
+                transition: 0.2s
+                padding-top: 70px
+
+
+        .messagesList
+            position: relative
+            grid-area: m
+            height: 100%
+            //border-left: 1px solid lightgrey
+            border: 1px solid lightgray
+            padding: 0
+            margin: 0
+            display: flex
+            flex-direction: column
+            justify-content: flex-end
+            background-color: #F2F2F2
+            @media(max-width: 700px)
+                border: none
 
 
 
-    .dialogsList
-        grid-area: d
-        position: sticky
-        top: 0
-        background-color: white
-        @media(max-width: 600px)
-            display: none
 
 
-    .messagesList
-        position: relative
-        grid-area: m
-        height: 100%
-        border-left: 1px solid lightgrey
-        display: flex
-        flex-direction: column
-        justify-content: flex-end
-        @media(max-width: 600px)
-            border: none
-
-
-    .sendMessageBlock
-        padding: 10px
-        position: sticky
-        bottom: 0
-        background-color: white
-        grid-area: s
-        width: 100%
-        border-left: 1px solid lightgrey
-
-
-        textarea
-            display: inline-block
-            vertical-align: middle
-            min-height: 60px
-            max-height: 150px
+        .sendMessageBlock
+            padding: 10px
+            position: sticky
+            bottom: 0
+            background-color: white
+            grid-area: s
             width: 100%
-            padding: 5px
-            padding-right: 60px
-        button
-            display: block
-            position: absolute
-            top: 50%
-            transform: translateY(-50%)
-            right: 20px
-            border-radius: 50px
-            height: 40px
-            width: 40px
-            text-align: center
-            img
+            border-left: 1px solid lightgrey
+            @media(max-width: 700px)
+                border: none
+
+
+            textarea
+                display: inline-block
+                vertical-align: middle
+                min-height: 60px
+                max-height: 150px
+                width: 100%
+                padding: 5px
+                padding-right: 60px
+            button
+                display: block
                 position: absolute
-                height: 60%
-                width: 60%
                 top: 50%
-                left: 50%
-                transform: translate(-50%, -50%)
-                margin: 0
-    
-    
+                transform: translateY(-50%)
+                right: 20px
+                border-radius: 50px
+                height: 40px
+                width: 40px
+                text-align: center
+                img
+                    position: absolute
+                    height: 60%
+                    width: 60%
+                    top: 50%
+                    left: 50%
+                    transform: translate(-50%, -50%)
+                    margin: 0
 
 
-        
+        .noDialogMessage
+            padding: 10px
+            position: sticky
+            bottom: 0
+            background-color: white
+            grid-area: s
+            width: 100%
+            height: 80px
+            border-left: 1px solid lightgrey
+            text-align: center

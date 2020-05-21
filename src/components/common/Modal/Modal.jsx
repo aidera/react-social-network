@@ -1,12 +1,15 @@
 import React from 'react';
 import cn from 'classnames';
 import s from './Modal.module.sass';
-import anime from 'animejs';
 import PreloaderSmall from "../PreloaderSmall/PreloaderSmall";
+import Overlay from "../Overlay/Overlay";
+import show from "../../../utils/animations/show";
+import hide from "../../../utils/animations/hide";
 
 
 /* Modal windows that can be without buttons, with 1 resolve/reject button or 2 buttons */
-/* Made with class component because of show-animation in beginning and loading state inside */
+/* Made with class component because of show-animation in beginning and loading state inside
+(when state in func have changed component rerenders and begin show-animation again) */
 
 class Modal extends React.PureComponent{
 
@@ -28,48 +31,24 @@ class Modal extends React.PureComponent{
         this.setState({
             modal: document.getElementsByClassName(s.modalContainer)[0]
         }, () => {
-            this.showModal()
-        });
-    }
-
-
-    /* Helpers */
-    showModal = () => {
-        anime({
-            targets: this.state.modal,
-            keyframes: [
-                {opacity: 0},
-                {opacity: 1}
-            ],
-            duration: 300,
-            easing: 'linear',
-            loop: false,
-        });
-    }
-
-    closeModal = () => {
-        anime({
-            targets: this.state.modal,
-            keyframes: [
-                {opacity: 1},
-                {opacity: 0}
-            ],
-            duration: 300,
-            easing: 'linear',
-            loop: false,
-            complete: () => {
-                this.props.setIsOpen(false)
-
-                let newState = this.state.modal;
-                newState.style.display = 'none';
-            }
+            show(this.state.modal);
         });
     }
 
 
 
 
-    /* Actions */
+    closeModalCallback = () => {
+        this.props.setIsOpen(false)
+
+        let newState = this.state.modal;
+        newState.style.display = 'none';
+    }
+
+
+
+
+
     cancelModal = () => {
         this.setState({
             isLoading: true
@@ -77,7 +56,7 @@ class Modal extends React.PureComponent{
             if(this.props.callbackCancel){
                 await this.props.callbackCancel();
             }
-            this.closeModal();
+            hide(this.state.modal, this.closeModalCallback);
         });
     }
 
@@ -88,7 +67,7 @@ class Modal extends React.PureComponent{
         if(this.state.callbackResolve){
             await this.state.callbackResolve()
         }
-        this.closeModal();
+        hide(this.state.modal, this.closeModalCallback);
     }
 
 
@@ -99,8 +78,9 @@ class Modal extends React.PureComponent{
         if(this.state.callbackReject){
             await this.state.callbackReject()
         }
-        this.closeModal();
+        hide(this.state.modal, this.closeModalCallback);
     }
+
 
 
 
@@ -109,7 +89,7 @@ class Modal extends React.PureComponent{
     render(){
         return (
             <div className={s.modalContainer}>
-                <div onClick={this.cancelModal} className={s.overlay} />
+                <Overlay onClick={this.cancelModal} />
                 <div className={s.modal}>
                     <span>{this.state.text}</span>
                     <div className={s.buttons}>

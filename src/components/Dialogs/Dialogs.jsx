@@ -1,11 +1,12 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import s from './Dialogs.module.sass';
 import Dialog from './Dialog/Dialog';
 import Message from './Message/Message';
 import cn from 'classnames';
 import {CustomField} from "../common/FormsControls/CustomFormControls";
-import {ErrorMessage, Form, Formik} from "formik";
+import {Form, Formik} from "formik";
 import sendImg from '../../assets/images/send-message_white.svg';
+import arrowBackImg from '../../assets/images/arrow-left.svg';
 
 
 const Dialogs = React.memo(({
@@ -18,8 +19,20 @@ const Dialogs = React.memo(({
                             }) => {
 
 
+
+
     const dialogsScrollTo = () => {
-        document.getElementById('dialogsScrollToRef').scrollTo(0,document.body.scrollHeight);
+        document.getElementById('dialogsScrollToRef').scrollTo(0,document.getElementById('dialogsScrollToRef').scrollHeight);
+    }
+
+
+    const showDialogs = () => {
+        document.getElementsByClassName(s.dialogsList)[0].style.left = 0
+        document.getElementsByClassName(s.showDialogsList)[0].style.left = '200%'
+    }
+    const hideDialogs = () => {
+        document.getElementsByClassName(s.dialogsList)[0].style.left = '-100%';
+        document.getElementsByClassName(s.showDialogsList)[0].style.left = 0
     }
 
 
@@ -30,8 +43,14 @@ const Dialogs = React.memo(({
 
     return (
         <div className={s.dialogs}>
+            <div onClick={showDialogs} className={s.showDialogsList}>
+                <img src={arrowBackImg} alt="show dialogs"/>
+                <span>Show other conversations</span>
+            </div>
             <div id={'dialogsScrollToRef'} className={s.dialogsContainer}>
-                <div className={s.dialogsList}>
+
+
+                <div onClick={hideDialogs} className={s.dialogsList}>
 
                     {dialogs.map(dialog => {
 
@@ -59,10 +78,12 @@ const Dialogs = React.memo(({
 
                         if (message.dialogId === currentUser) {
 
+
+
                             let usersCopy = [...users];
                             let newUser = '';
                             usersCopy.forEach((user) => {
-                                if(user.userId === message.opponentId){
+                                if(user.userId === currentUser){
                                     newUser = user;
                                 }
                             })
@@ -70,6 +91,7 @@ const Dialogs = React.memo(({
                             return <Message
                                 key={message.id}
                                 messageId={message.id}
+                                opponent={newUser}
                                 from={message.from}
                                 messageText={message.messageText}
                                 dialogId={message.dialogId}
@@ -126,6 +148,11 @@ const Dialogs = React.memo(({
                 }}
 
                 </Formik>
+                }
+                {!currentUser &&
+                    <div className={s.noDialogMessage}>
+                        <span>Choose user to start conversation</span>
+                    </div>
                 }
 
             </div>

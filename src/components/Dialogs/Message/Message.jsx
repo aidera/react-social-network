@@ -7,6 +7,7 @@ const Message = React.memo(({
                                 from,
                                 time,
                                 dialogId,
+                                opponent,
                                 ...props}) => {
 
 
@@ -33,12 +34,15 @@ const Message = React.memo(({
         return formattedTime;
     }
 
-
+    let opponentName = 'opponent:';
+    if(opponent.fullName) {
+        opponentName = opponent.fullName+':';
+    }
 
     return (
         <div className={cn(s.message, {[s.myMessage]: from==='me'})}>
             <div className={s.messageInnerContainer}>
-                <div className={s.messageFrom}>{from === 'me' ? 'me:' : 'opponent:'}</div>
+                <div className={s.messageFrom}>{from === 'me' ? 'me:' : opponentName}</div>
                 <div className={s.messageText}>{messageText}</div>
                 <div className={s.time}>{timeConverter(time)}</div>
             </div>
