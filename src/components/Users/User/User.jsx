@@ -2,13 +2,16 @@ import React from "react";
 import s from './User.module.sass'
 import defaultUserPhoto from '../../../assets/images/default-user.png';
 import {NavLink} from 'react-router-dom';
-import Preloader from "../../common/Preloader/Preloader";
+import PreloaderSmall from "../../common/PreloaderSmall/PreloaderSmall";
+import cn from 'classnames';
+import mailImg from '../../../assets/images/mail.svg';
 
 const User = React.memo(({
                              state,
                              follow,
                              unfollow,
                              followingInProgress,
+                             isAuth,
                              ...props}) => {
 
 
@@ -16,23 +19,25 @@ const User = React.memo(({
 
 
     return (
-        <div className={s.user}>
+        <div data-id={state.id} className={s.user}>
             <NavLink to={`/profile/${state.id}`}>
                 <div className={s.avatar} style={{backgroundImage: `url(${userImage})`}} />
             </NavLink>
             <div className={s.description}>
                 <div className={s.name}>{state.name}</div>
             </div>
-            <div className={s.buttons}>
-                {followingInProgress.some(id => id === state.id)
-                    ? <Preloader />
-                    : state.followed === true
-                            ? <button className='button' onClick={ () => { unfollow(state.id) } }>Unfollow</button>
-                            : <button className='button' onClick={ () => { follow(state.id)} }>Follow</button>
+            {!!isAuth &&
+                <div className={s.buttons}>
+                    {followingInProgress.some(id => id === state.id)
+                        ? <PreloaderSmall />
+                        : state.followed === true
+                                ? <button className={cn('button', 'button-normal', s.followButton)} onClick={ () => { unfollow(state.id) } }>Unfollow</button>
+                                : <button className={cn('button', 'button-success', s.followButton)} onClick={ () => { follow(state.id)} }>+ Follow</button>
 
-                }
-
-            </div>
+                    }
+                    <button className={cn('button', 'button-success', s.startConversation)}><img src={mailImg} alt="start conversation"/></button>
+                </div>
+            }
         </div>
     );
 })

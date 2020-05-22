@@ -2,7 +2,8 @@
 
 .pagination
   margin-bottom: 10px
-  span
+
+  a
     border: 1px solid lightgray
     cursor: pointer
     padding: 5px
@@ -10,7 +11,24 @@
     min-width: 35px
     text-align: center
     display: inline-block
+    @media (max-width: 550px)
+      padding: 5px
+      margin: 2px
+      min-width: 35px
+      font-size: $font-simple_small
     &.selected
       font-weight: bold
       color: white
       background-color: lightgray
+    &.prevButton, &.nextButton
+      @media (max-width: 550px)
+        width: 65px
+      @media (max-width: 450px)
+        display: block
+  span
+    width: 35px
+    display: inline-block
+    text-align: center
+    @media (max-width: 550px)
+      width: 15px
+      font-size: $font-simple_small

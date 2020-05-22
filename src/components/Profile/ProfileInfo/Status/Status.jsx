@@ -4,6 +4,7 @@ import PreloaderSmall from "../../../common/PreloaderSmall/PreloaderSmall";
 import {Form, Formik} from "formik";
 import * as Yup from 'yup';
 import {CustomField} from "../../../common/FormsControls/CustomFormControls";
+import cn from 'classnames';
 
 
 
@@ -46,7 +47,7 @@ const Status = React.memo(({
         <div>
             {(!editMode && !isLoadingStatus) &&
                 <div onClick={() => changeEditMode(true)} className={s.statusBlock}>
-                    <span>{status || '------'}</span>
+                    <span className={cn({[s.pointer]: isOwner})}>{status || '------'}</span>
                 </div>
             }
             {(!editMode && !!isLoadingStatus) &&

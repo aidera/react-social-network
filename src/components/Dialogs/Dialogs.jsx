@@ -9,6 +9,8 @@ import sendImg from '../../assets/images/send-message_white.svg';
 import arrowBackImg from '../../assets/images/arrow-left.svg';
 
 
+
+/* Becomes fixed in mobile versions */
 const Dialogs = React.memo(({
                                 dialogs,
                                 messages,
@@ -26,6 +28,7 @@ const Dialogs = React.memo(({
     }
 
 
+    /* Mobile versions animation */
     const showDialogs = () => {
         document.getElementsByClassName(s.dialogsList)[0].style.left = 0
         document.getElementsByClassName(s.showDialogsList)[0].style.left = '200%'
@@ -76,7 +79,7 @@ const Dialogs = React.memo(({
                     {messages.map(message => {
 
                         if (message.dialogId === currentDialog) {
-                            
+
                             let dialogsCopy = [...dialogs];
                             let newDialog = null;
                             dialogsCopy.forEach((dialog) => {

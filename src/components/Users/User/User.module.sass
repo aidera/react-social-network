@@ -1,9 +1,16 @@
 @import ../../../_variables
 
 .user
-  display: block
+  display: grid
+  grid-template-areas: 'avatar description buttons' 'avatar description buttons'
+  grid-template-columns: 100px 1fr 150px
+  grid-gap: 10px
   padding: 20px
   border-bottom: 1px solid lightgray
+  align-items: center
+  @media(max-width: 500px)
+    grid-template-areas: 'avatar description description' 'avatar buttons buttons'
+    grid-template-columns: 60px 1fr
 
   .avatar
     width: 100px
@@ -12,18 +19,25 @@
     overflow: hidden
     background-position: center
     background-size: cover
-    display: inline-block
-    vertical-align: middle
-    margin-right: 20px
+    grid-area: avatar
+    align-self: center
+    @media(max-width: 500px)
+      width: 60px
+      height: 60px
 
   .description
-    display: inline-block
-    vertical-align: middle
-    width: 200px
-
-
+    grid-area: description
+    word-wrap: break-word
 
   .buttons
-    display: inline-block
-    width: 200px
+    grid-area: buttons
+    text-align: right
+    @media(max-width: 500px)
+      text-align: left
+    *
+      vertical-align: middle
+    button
+      margin: 0 3px
+
+
 
