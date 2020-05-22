@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect} from 'react';
 import s from './Dialogs.module.sass';
 import Dialog from './Dialog/Dialog';
 import Message from './Message/Message';
@@ -14,7 +14,7 @@ const Dialogs = React.memo(({
                                 messages,
                                 users,
                                 sendMessage,
-                                currentUser,
+                                currentDialog,
                                 ...props
                             }) => {
 
@@ -38,7 +38,7 @@ const Dialogs = React.memo(({
 
 
     useEffect(()=>{
-        dialogsScrollTo()
+        dialogsScrollTo();
     })
 
     return (
@@ -64,9 +64,8 @@ const Dialogs = React.memo(({
 
                         return <Dialog
                             key={dialog.id}
+                            dialogId={dialog.id}
                             user={newUser}
-                            userId={dialog.opponentId}
-                            currentUser={currentUser}
                         />
 
                     })}
@@ -76,17 +75,31 @@ const Dialogs = React.memo(({
 
                     {messages.map(message => {
 
-                        if (message.dialogId === currentUser) {
+                        if (message.dialogId === currentDialog) {
+                            
+                            let dialogsCopy = [...dialogs];
+                            let newDialog = null;
+                            dialogsCopy.forEach((dialog) => {
 
-
+                                if(dialog.id === message.dialogId){
+                                    newDialog = dialog;
+                                }
+                            })
 
                             let usersCopy = [...users];
                             let newUser = '';
-                            usersCopy.forEach((user) => {
-                                if(user.userId === currentUser){
-                                    newUser = user;
-                                }
-                            })
+
+                            if(newDialog){
+                                usersCopy.forEach((user) => {
+
+                                    if(user.userId === newDialog.opponentId){
+                                        newUser = user;
+                                    }
+                                })
+                            }
+
+
+
 
                             return <Message
                                 key={message.id}
@@ -101,7 +114,7 @@ const Dialogs = React.memo(({
                         return null
                     })}
                 </div>
-                {!!currentUser &&
+                {!!currentDialog &&
                 <Formik
                     initialValues={{
                         message: ''
@@ -109,7 +122,7 @@ const Dialogs = React.memo(({
                     onSubmit={(values, actions, ...props) => {
                         if (values.message.length > 0) {
                             let promise = new Promise((resolve, reject) => {
-                                sendMessage(currentUser, values.message, Date.now())
+                                sendMessage(currentDialog, values.message, Date.now())
                                 dialogsScrollTo();
                                 return resolve(null)
                             })
@@ -149,7 +162,7 @@ const Dialogs = React.memo(({
 
                 </Formik>
                 }
-                {!currentUser &&
+                {!currentDialog &&
                     <div className={s.noDialogMessage}>
                         <span>Choose user to start conversation</span>
                     </div>

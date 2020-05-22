@@ -14,14 +14,14 @@ class DialogsContainer extends React.PureComponent{
 
 
     state = {
-        currentUser: Number(this.props.match.params.userId),
+        currentDialog: Number(this.props.match.params.dialogId),
         users: this.props.users
     }
 
-    /* Checking for userId in URL. If it's not - then use default page */
+    /* Checking for dialogId in URL. If it's not - then use default page */
     refreshDialogs = () => {
-        let userId = Number(this.props.match.params.userId);
-        this.setState({currentUser: userId})
+        let dialogId = Number(this.props.match.params.dialogId);
+        this.setState({currentDialog: dialogId})
     }
 
     /* We have dialogs arr in our reducer. We need to map each dialog for userId and get him from the server*/
@@ -45,7 +45,7 @@ class DialogsContainer extends React.PureComponent{
     render () {
         return (
             <Dialogs
-                currentUser={this.state.currentUser}
+                currentDialog={this.state.currentDialog}
                 dialogs={this.props.dialogs}
                 messages={this.props.messages}
                 users={this.props.users}

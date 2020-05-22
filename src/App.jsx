@@ -72,7 +72,7 @@ class App extends React.Component {
 
                                     <Switch>
 
-                                        <Route path='/dialogs/:userId?'
+                                        <Route path='/dialogs/:dialogId?'
                                                render={() => <DialogsContainer/>}/>
 
                                         <Route path='/profile/:userId?'
