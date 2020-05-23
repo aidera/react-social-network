@@ -7,6 +7,7 @@ import {CustomField} from "../common/FormsControls/CustomFormControls";
 import {Form, Formik} from "formik";
 import sendImg from '../../assets/images/send-message_white.svg';
 import arrowBackImg from '../../assets/images/arrow-left.svg';
+import Preloader from "../common/Preloader/Preloader";
 
 
 
@@ -18,6 +19,10 @@ const Dialogs = React.memo(({
                                 sendMessage,
                                 setDialog,
                                 currentDialog,
+                                userFromUrl,
+                                getUsersFromDialogs,
+                                isMessageFetching,
+                                isMessagesLoading,
                                 ...props
                             }) => {
 
@@ -48,6 +53,9 @@ const Dialogs = React.memo(({
 
     useEffect(()=>{
         dialogsScrollTo();
+        if(!!currentDialog){
+            hideDialogs();
+        }
     })
 
 
@@ -58,7 +66,7 @@ const Dialogs = React.memo(({
 
             <div ref={showDialogsListRef} onClick={showDialogs} className={s.showDialogsList}>
                 <img src={arrowBackImg} alt="show dialogs"/>
-                <span>Show other conversations</span>
+                <span>{!isMessagesLoading && userFromUrl.fullName}</span>
             </div>
 
             <div ref={dialogsScrollToRef} className={s.dialogsContainer}>
@@ -83,33 +91,43 @@ const Dialogs = React.memo(({
                     })}
 
                 </div>
+
+                <div className={s.userName}>{!(isMessageFetching || isMessagesLoading) && userFromUrl.fullName}</div>
+
                 <div className={s.messagesList}>
+                    {!isMessagesLoading &&
+                        <>
+                            {messages.map(message => {
 
-                    {messages.map(message => {
+                                if (message.opponentId === currentDialog) {
 
-                        if (message.opponentId === currentDialog) {
-
-                            // Searching for user in our dialogs array
-                            let newUser = '';
-                            if(message.opponentId){
-                                users.forEach((user) => {
-                                    if(user.userId === message.opponentId){
-                                        newUser = user;
+                                    // Searching for user in our dialogs array
+                                    let newUser = '';
+                                    if(message.opponentId){
+                                        users.forEach((user) => {
+                                            if(user.userId === message.opponentId){
+                                                newUser = user;
+                                            }
+                                        })
                                     }
-                                })
-                            }
 
 
-                            return <Message
-                                key={message.id}
-                                opponent={newUser}
-                                from={message.from}
-                                messageText={message.messageText}
-                                time={message.time}
-                            />
-                        }
-                        return null
-                    })}
+                                    return <Message
+                                        key={message.id}
+                                        opponent={newUser}
+                                        from={message.from}
+                                        messageText={message.messageText}
+                                        time={message.time}
+                                    />
+                                }
+                                return null
+                            })}
+                        </>
+                    }
+                    {!!isMessagesLoading &&
+                        <Preloader />
+                    }
+
                 </div>
 
                 {!!currentDialog &&
@@ -121,26 +139,20 @@ const Dialogs = React.memo(({
 
                     onSubmit={(values, actions, ...props) => {
 
-                        if (values.message.length > 0) {
+                        if (values.message.length > 0 && isMessageFetching === false && isMessagesLoading === false) {
 
-                            let promise = new Promise((resolve, reject) => {
-                                sendMessage(currentDialog, values.message, Date.now())
-                                dialogsScrollTo();
-
-                                let isNewDialog = true;
-                                dialogs.forEach((dialog) => {
-                                    if(dialog.opponentId === currentDialog){
-                                        isNewDialog = false;
-                                    }
-                                })
-                                if(isNewDialog === true){
-                                    setDialog(currentDialog)
+                            let promise = new Promise(async (resolve, reject) => {
+                                // Sending message
+                                let response = await sendMessage(currentDialog, values.message, Date.now())
+                                if(response === true){
+                                    resolve(null)
+                                }else{
+                                    reject('Sorry, there is no such user')
                                 }
-
-                                return resolve(null)
                             })
                             promise
                                 .then(() => {
+                                    dialogsScrollTo();
                                     actions.resetForm({message: ''})
                                 })
                                 .catch((error) => {
@@ -168,10 +180,12 @@ const Dialogs = React.memo(({
                                     }
                                 }}
                             />
-                            {/*<ErrorMessage name={'general'}/>*/}
-                            <button type={'submit'} className={cn('button', 'button-success')}><img src={sendImg}
-                                                                                                    alt="send message"/>
-                            </button>
+                            {formik.errors.general ? <div className={s.formSummaryError}>{formik.errors.general}</div> : null}
+                            {!(isMessageFetching || isMessagesLoading) &&
+                                <button type={'submit'} className={cn('button', 'button-success')}>
+                                    <img src={sendImg} alt="send message"/>
+                                </button>
+                            }
                         </Form>
                     );
                 }}

@@ -37,8 +37,8 @@
         position: relative
         display: grid
         grid-template-columns: 1fr 2fr
-        grid-template-rows: 1fr 80px
-        grid-template-areas: 'd m' 'd s'
+        grid-template-rows: 0px 1fr 80px
+        grid-template-areas: 'dialogs userName' 'dialogs messages' 'dialogs sendMessage'
         grid-auto-rows: minmax(80px, 200px)
         align-items: start
         height: 100%
@@ -46,7 +46,7 @@
         overflow-y: scroll
         background-color: white
         @media(max-width: 700px)
-            grid-template-areas: 'm m' 's s'
+            grid-template-areas: 'messages messages' 'messages messages' 'sendMessage sendMessage'
             position: fixed
             top: 0
             left: 0
@@ -54,7 +54,7 @@
 
 
         .dialogsList
-            grid-area: d
+            grid-area: dialogs
             position: sticky
             top: 0
             background-color: white
@@ -72,11 +72,10 @@
 
         .messagesList
             position: relative
-            grid-area: m
+            grid-area: messages
             height: 100%
-            //border-left: 1px solid lightgrey
-            border: 1px solid lightgray
             padding: 0
+            padding-top: 50px
             margin: 0
             display: flex
             flex-direction: column
@@ -84,6 +83,19 @@
             background-color: #F2F2F2
             @media(max-width: 700px)
                 border: none
+
+        .userName
+            position: sticky
+            z-index: 1
+            top: 0
+            width: 100%
+            background-color: rgba(255, 255, 255, 0.8)
+            padding: 5px
+            border: 1px solid lightgrey
+            font-weight: bolder
+            grid-area: userName
+            @media(max-width: 700px)
+                display: none
 
 
 
@@ -93,10 +105,10 @@
             padding: 10px
             position: sticky
             bottom: 0
-            background-color: white
-            grid-area: s
+            background-color: rgba(255, 255, 255, 0.8)
+            grid-area: sendMessage
             width: 100%
-            border-left: 1px solid lightgrey
+            border: 1px solid lightgrey
             @media(max-width: 700px)
                 border: none
 
@@ -109,6 +121,7 @@
                 width: 100%
                 padding: 5px
                 padding-right: 60px
+                background-color: white
             button
                 display: block
                 position: absolute
@@ -138,4 +151,12 @@
             width: 100%
             height: 80px
             border-left: 1px solid lightgrey
+            text-align: center
+
+        .formSummaryError
+            position: absolute
+            left: 0
+            top: -30px
+            color: red
+            width: 100%
             text-align: center

@@ -3,6 +3,8 @@ import {profileAPI} from '../api/api'
 const SEND_MESSAGE = 'dialogs/SEND-MESSAGE';
 const SET_DIALOG = 'dialogs/SET_DIALOG';
 const SET_USER = 'dialogs/SET_USER';
+const SET_IS_MESSAGE_FETCHING = 'dialogs/MESSAGE_IS_FETCHING';
+const SET_IS_MESSAGES_LOADING = 'dialogs/SET_IS_MESSAGES_LOADING';
 
 
 
@@ -25,6 +27,8 @@ let initialState = {
         {id: 4, opponentId: 12}
     ],
     users: [],  // collecting users from dialogs arr (that's why we dont need to get user again in Message and Dialog components)
+    isMessageFetching: false,
+    isMessagesLoading: false
 };
 
 
@@ -59,6 +63,18 @@ const dialogsReducer = (state = initialState, action) => {
                 users: [...state.users, action.userId]
             }
 
+        case SET_IS_MESSAGE_FETCHING:
+            return {
+                ...state,
+                isMessageFetching: action.status
+            }
+
+        case SET_IS_MESSAGES_LOADING:
+            return {
+                ...state,
+                isMessagesLoading: action.status
+            }
+
         default:
             return state;
 
@@ -66,16 +82,69 @@ const dialogsReducer = (state = initialState, action) => {
 }
 
 
-export const sendMessage = (userId, newMessage, time) => ({ type: SEND_MESSAGE, userId, newMessage, time });
+export const sendMessageSuccess = (userId, newMessage, time) => ({ type: SEND_MESSAGE, userId, newMessage, time });
 export const setDialog = (userId) => ({ type: SET_DIALOG, userId });
-export const setUser = (userId) => ({ type: SET_USER, userId });
+export const setUserSuccess = (userId) => ({ type: SET_USER, userId });
+export const setIsMessageFetching = (status) => ({ type: SET_IS_MESSAGE_FETCHING, status });
+export const setIsMessagesLoading = (status) => ({ type: SET_IS_MESSAGES_LOADING, status });
 
 
+
+export const setUser = (userId) => (dispatch) => {
+    return profileAPI.getUsersProfile(userId)
+        .then((response) => {
+            dispatch(setUserSuccess(response));
+            return response
+        })
+}
 
 export const getUserFromServer = (userId) => (dispatch) => {
-    profileAPI.getUsersProfile(userId).then((response) => {
-        dispatch(setUser(response));
+    dispatch(setIsMessagesLoading(true));
+    return profileAPI.getUsersProfile(userId)
+        .then((response)=>{
+            return response
+        })
+        .finally(() => {
+            dispatch(setIsMessagesLoading(false));
+        })
+}
+
+
+export const sendMessage = (userId, newMessage, time) => (dispatch, getState) => {
+
+    const state = getState();
+    const dialogs = state.dialogsPage.dialogs;
+
+    dispatch(setIsMessageFetching(true));
+
+
+    let isNewDialog = true;
+    dialogs.forEach((dialog) => {
+        if(dialog.opponentId === userId){
+            isNewDialog = false;
+        }
     })
+    if(isNewDialog === true){
+        return profileAPI.getUsersProfile(userId)
+            .then(() => {
+                dispatch(setDialog(userId));
+                dispatch(sendMessageSuccess(userId, newMessage, time));
+                return true
+            })
+            .catch(() => {
+                return false
+            })
+            .finally(() => {
+                dispatch(setIsMessageFetching(false));
+            })
+
+    }else{
+        dispatch(sendMessageSuccess(userId, newMessage, time));
+        dispatch(setIsMessageFetching(false));
+        return true
+    }
+
+
 
 }
 
