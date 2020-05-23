@@ -6,7 +6,6 @@ const Message = React.memo(({
                                 messageText,
                                 from,
                                 time,
-                                dialogId,
                                 opponent,
                                 ...props}) => {
 

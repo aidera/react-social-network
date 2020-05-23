@@ -1,6 +1,6 @@
 import Dialogs from './Dialogs';
 import React from 'react';
-import {getUserFromServer, sendMessage} from '../../redux/dialogs-reducer'
+import {getUserFromServer, sendMessage, setDialog} from '../../redux/dialogs-reducer'
 import {connect} from "react-redux";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
@@ -10,8 +10,6 @@ import {withRouter} from "react-router-dom";
 
 
 class DialogsContainer extends React.PureComponent{
-
-
 
     state = {
         currentDialog: Number(this.props.match.params.dialogId),
@@ -31,15 +29,19 @@ class DialogsContainer extends React.PureComponent{
                 this.props.getUserFromServer(dialog.opponentId);
             }
         })
+
     }
+
+
 
     componentDidMount () {
         this.refreshDialogs();
-        this.getUsersFromDialogs(this.props.dialogs)
+        this.getUsersFromDialogs(this.props.dialogs);
     }
 
     componentDidUpdate () {
         this.refreshDialogs();
+        this.getUsersFromDialogs(this.props.dialogs);
     }
 
     render () {
@@ -50,6 +52,7 @@ class DialogsContainer extends React.PureComponent{
                 messages={this.props.messages}
                 users={this.props.users}
                 sendMessage={this.props.sendMessage}
+                setDialog={this.props.setDialog}
             />
         );
     }
@@ -57,7 +60,6 @@ class DialogsContainer extends React.PureComponent{
 }
 
 
-/* Dialogs page in progress */
 
 let mapStateToProps = (state) => {
     return {
@@ -71,7 +73,7 @@ let mapStateToProps = (state) => {
 
 
 export default compose(
-    connect(mapStateToProps,{sendMessage, getUserFromServer}),
+    connect(mapStateToProps,{sendMessage, getUserFromServer,setDialog}),
     withRouter,
     withAuthRedirect // Protect from non-auth users
 )(DialogsContainer);

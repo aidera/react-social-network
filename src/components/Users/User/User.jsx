@@ -35,7 +35,7 @@ const User = React.memo(({
                                 : <button className={cn('button', 'button-success', s.followButton)} onClick={ () => { follow(state.id)} }>+ Follow</button>
 
                     }
-                    <button className={cn('button', 'button-success', s.startConversation)}><img src={mailImg} alt="start conversation"/></button>
+                    <NavLink to={`/dialogs/${state.id}`} className={cn('button', 'button-success', s.startConversation)}><img src={mailImg} alt="start conversation"/></NavLink>
                 </div>
             }
         </div>

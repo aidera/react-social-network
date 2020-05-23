@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import s from './Dialogs.module.sass';
 import Dialog from './Dialog/Dialog';
 import Message from './Message/Message';
@@ -16,26 +16,32 @@ const Dialogs = React.memo(({
                                 messages,
                                 users,
                                 sendMessage,
+                                setDialog,
                                 currentDialog,
                                 ...props
                             }) => {
 
 
 
+    /* Scroll down all messages after sending one and in the beginning */
+    const dialogsScrollToRef = useRef();
 
     const dialogsScrollTo = () => {
-        document.getElementById('dialogsScrollToRef').scrollTo(0,document.getElementById('dialogsScrollToRef').scrollHeight);
+        dialogsScrollToRef.current.scrollTo(0,dialogsScrollToRef.current.scrollHeight);
     }
 
 
     /* Mobile versions animation */
+    const dialogsListRef = useRef();
+    const showDialogsListRef = useRef();
+
     const showDialogs = () => {
-        document.getElementsByClassName(s.dialogsList)[0].style.left = 0
-        document.getElementsByClassName(s.showDialogsList)[0].style.left = '200%'
+        dialogsListRef.current.style.left = 0
+        showDialogsListRef.current.style.left = '200%'
     }
     const hideDialogs = () => {
-        document.getElementsByClassName(s.dialogsList)[0].style.left = '-100%';
-        document.getElementsByClassName(s.showDialogsList)[0].style.left = 0
+        dialogsListRef.current.style.left = '-100%';
+        showDialogsListRef.current.style.left = 0
     }
 
 
@@ -44,22 +50,26 @@ const Dialogs = React.memo(({
         dialogsScrollTo();
     })
 
+
+
+
     return (
         <div className={s.dialogs}>
-            <div onClick={showDialogs} className={s.showDialogsList}>
+
+            <div ref={showDialogsListRef} onClick={showDialogs} className={s.showDialogsList}>
                 <img src={arrowBackImg} alt="show dialogs"/>
                 <span>Show other conversations</span>
             </div>
-            <div id={'dialogsScrollToRef'} className={s.dialogsContainer}>
 
+            <div ref={dialogsScrollToRef} className={s.dialogsContainer}>
 
-                <div onClick={hideDialogs} className={s.dialogsList}>
+                <div ref={dialogsListRef} onClick={hideDialogs} className={s.dialogsList}>
 
                     {dialogs.map(dialog => {
 
-                        let usersCopy = [...users];
+                        // Searching for user in our dialogs array
                         let newUser = '';
-                        usersCopy.forEach((user) => {
+                        users.forEach((user) => {
                             if(user.userId === dialog.opponentId){
                                 newUser = user;
                             }
@@ -67,7 +77,6 @@ const Dialogs = React.memo(({
 
                         return <Dialog
                             key={dialog.id}
-                            dialogId={dialog.id}
                             user={newUser}
                         />
 
@@ -78,55 +87,56 @@ const Dialogs = React.memo(({
 
                     {messages.map(message => {
 
-                        if (message.dialogId === currentDialog) {
+                        if (message.opponentId === currentDialog) {
 
-                            let dialogsCopy = [...dialogs];
-                            let newDialog = null;
-                            dialogsCopy.forEach((dialog) => {
-
-                                if(dialog.id === message.dialogId){
-                                    newDialog = dialog;
-                                }
-                            })
-
-                            let usersCopy = [...users];
+                            // Searching for user in our dialogs array
                             let newUser = '';
-
-                            if(newDialog){
-                                usersCopy.forEach((user) => {
-
-                                    if(user.userId === newDialog.opponentId){
+                            if(message.opponentId){
+                                users.forEach((user) => {
+                                    if(user.userId === message.opponentId){
                                         newUser = user;
                                     }
                                 })
                             }
 
 
-
-
                             return <Message
                                 key={message.id}
-                                messageId={message.id}
                                 opponent={newUser}
                                 from={message.from}
                                 messageText={message.messageText}
-                                dialogId={message.dialogId}
                                 time={message.time}
                             />
                         }
                         return null
                     })}
                 </div>
+
                 {!!currentDialog &&
                 <Formik
                     initialValues={{
                         message: ''
                     }}
+
+
                     onSubmit={(values, actions, ...props) => {
+
                         if (values.message.length > 0) {
+
                             let promise = new Promise((resolve, reject) => {
                                 sendMessage(currentDialog, values.message, Date.now())
                                 dialogsScrollTo();
+
+                                let isNewDialog = true;
+                                dialogs.forEach((dialog) => {
+                                    if(dialog.opponentId === currentDialog){
+                                        isNewDialog = false;
+                                    }
+                                })
+                                if(isNewDialog === true){
+                                    setDialog(currentDialog)
+                                }
+
                                 return resolve(null)
                             })
                             promise
@@ -136,9 +146,12 @@ const Dialogs = React.memo(({
                                 .catch((error) => {
                                     actions.setFieldError('general', error);
                                 })
+
                         }
 
                     }}
+
+
                 >{formik => {
                     return (
                         <Form className={s.sendMessageBlock}>
