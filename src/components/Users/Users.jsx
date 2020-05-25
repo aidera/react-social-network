@@ -6,12 +6,9 @@ import Paginator from '../common/Paginator/Paginator';
 
 
 const Users = React.memo(({
-                              onPageChange,
                               currentPage,
                               totalUsersCount,
                               onPageLimit,
-                              requestUsers,
-                              requestAddUsers,
                               isFetching,
                               isLoading,
                               users,
@@ -21,8 +18,6 @@ const Users = React.memo(({
                               isAuth,
                               onscrollTargetVisible,
                               ...props}) => {
-
-
 
 
 
@@ -40,20 +35,20 @@ const Users = React.memo(({
     return (
         <>
             {!isLoading &&
-            <div className={s.usersPage}>
-                <h1>Users</h1>
-                <div className={s.buttons}>
+                <div className={s.usersPage}>
+                    <h1>Users</h1>
+                    <div className={s.buttons}>
 
-                    <Paginator
-                        pageLink={'/users'}
-                        totalElementsCount={totalUsersCount}
-                        onPageLimit={onPageLimit}
-                        currentPage={currentPage}
-                    />
+                        <Paginator
+                            pageLink={'/users'}
+                            totalElementsCount={totalUsersCount}
+                            onPageLimit={onPageLimit}
+                            currentPage={currentPage}
+                        />
 
-                </div>
+                    </div>
 
-                {users.map(user => {
+                    {users.map(user => {
                         return <User
                             key={user.id}
                             state={user}
@@ -62,14 +57,15 @@ const Users = React.memo(({
                             followingInProgress={followingInProgress}
                             isAuth={isAuth}
                         />
+                        }
+                    )}
+                    <div ref={onScrollTarget} className={s.scrollElem}/>
+                    {isFetching &&
+                        <Preloader/>
                     }
-                )}
-                <div ref={onScrollTarget} className={s.scrollElem}/>
-                {isFetching &&
-                <Preloader/>
-                }
-            </div>
+                </div>
             }
+
             {isLoading &&
                 <Preloader/>
             }

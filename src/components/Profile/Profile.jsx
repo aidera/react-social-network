@@ -1,9 +1,11 @@
 import React from 'react';
 import s from './Profile.module.sass';
 import PostsContainer from './Posts/PostsContainer';
-import ProfileInfo from './ProfileInfo/ProfileInfo';
+import User from './User/User';
 import Preloader from "../common/Preloader/Preloader";
 import ErrorContent from "../ErrorContent/ErrorContent";
+
+
 
 const Profile = React.memo( ({
                                  profile,
@@ -18,7 +20,7 @@ const Profile = React.memo( ({
                                  ...props}) => {
 
 
-    /* Check profile obj to show error if needed */
+
     if(profile === null) {
         return <Preloader />
     }
@@ -34,11 +36,12 @@ const Profile = React.memo( ({
     }
 
 
+
     return (
         <div className={s.profile}>
             <div>
                 
-                <ProfileInfo
+                <User
                     profile={profile}
                     isLoadingProfileInfoChanges={isLoadingProfileInfoChanges}
                     isLoadingAvatar={isLoadingAvatar}
@@ -49,6 +52,7 @@ const Profile = React.memo( ({
                     savePhoto={savePhoto}
                     saveProfileInfo={saveProfileInfo}
                 />
+
                 <PostsContainer
                     userPhoto={profile.photos.large}
                     isOwner={isOwner}
@@ -59,5 +63,7 @@ const Profile = React.memo( ({
         </div>
     );
 });
+
+
 
 export default Profile;

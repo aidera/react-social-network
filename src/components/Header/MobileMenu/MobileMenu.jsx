@@ -6,8 +6,8 @@ import show from '../../../utils/animations/show';
 import hide from '../../../utils/animations/hide';
 
 
-const MobileMenu = React.memo( ({closeMobileMenu, ...props}) => {
 
+const MobileMenu = React.memo( ({closeMobileMenu, ...props}) => {
 
     const mobileMenu = useRef(null);
 
@@ -15,15 +15,10 @@ const MobileMenu = React.memo( ({closeMobileMenu, ...props}) => {
         show(mobileMenu.current)
     })
 
-    const onCloseMobileMenu = async() => {
-        hide(mobileMenu.current, closeMobileMenu)
-
-    }
 
 
     return (
-
-        <div ref={mobileMenu} onClick={onCloseMobileMenu} className={s.mobileMenuContainer}>
+        <div ref={mobileMenu} onClick={() => {hide(mobileMenu.current, closeMobileMenu)}} className={s.mobileMenuContainer}>
             <Overlay  />
             <nav className={s.mobileMenu}>
                 <NavLink to='/profile' activeClassName={s.active}>Profile</NavLink>
@@ -31,10 +26,9 @@ const MobileMenu = React.memo( ({closeMobileMenu, ...props}) => {
                 <NavLink to='/users' activeClassName={s.active}>Users</NavLink>
             </nav>
         </div>
-
-
-
     );
 });
+
+
 
 export default MobileMenu;

@@ -11,7 +11,6 @@ import Preloader from "../common/Preloader/Preloader";
 
 
 
-/* Becomes fixed in mobile versions */
 const Dialogs = React.memo(({
                                 dialogs,
                                 messages,
@@ -23,17 +22,43 @@ const Dialogs = React.memo(({
                                 getUsersFromDialogs,
                                 isMessageFetching,
                                 isMessagesLoading,
+                                findUserInUsersArray,
                                 ...props
                             }) => {
 
 
+    const submitSendMessage = (values, actions) => {
+        if (values.message.length > 0 && isMessageFetching === false && isMessagesLoading === false) {
+            let promise = new Promise(async (resolve, reject) => {
+                let response = await sendMessage(currentDialog, values.message, Date.now())
+                if(response === true){
+                    resolve(null)
+                }else{
+                    reject('Sorry, there is no such user')
+                }
+            })
+            promise
+                .then(() => {
+                    dialogsScrollTo();
+                    actions.resetForm({message: ''})
+                })
+                .catch((error) => {
+                    actions.setFieldError('general', error);
+                })
+        }
+    }
 
-    /* Scroll down all messages after sending one and in the beginning */
+
+    /* Scrolls down all messages after sending one and in the beginning */
     const dialogsScrollToRef = useRef();
 
     const dialogsScrollTo = () => {
         dialogsScrollToRef.current.scrollTo(0,dialogsScrollToRef.current.scrollHeight);
     }
+
+    useEffect(()=>{
+        dialogsScrollTo();
+    })
 
 
     /* Mobile versions animation */
@@ -49,15 +74,11 @@ const Dialogs = React.memo(({
         showDialogsListRef.current.style.left = 0
     }
 
-
-
     useEffect(()=>{
-        dialogsScrollTo();
         if(!!currentDialog){
             hideDialogs();
         }
-    })
-
+    }, [currentDialog])
 
 
 
@@ -72,24 +93,12 @@ const Dialogs = React.memo(({
             <div ref={dialogsScrollToRef} className={s.dialogsContainer}>
 
                 <div ref={dialogsListRef} onClick={hideDialogs} className={s.dialogsList}>
-
                     {dialogs.map(dialog => {
-
-                        // Searching for user in our dialogs array
-                        let newUser = '';
-                        users.forEach((user) => {
-                            if(user.userId === dialog.opponentId){
-                                newUser = user;
-                            }
-                        })
-
                         return <Dialog
                             key={dialog.id}
-                            user={newUser}
+                            user={findUserInUsersArray(dialog.opponentId)}
                         />
-
                     })}
-
                 </div>
 
                 <div className={s.userName}>{!(isMessageFetching || isMessagesLoading) && userFromUrl.fullName}</div>
@@ -98,100 +107,62 @@ const Dialogs = React.memo(({
                     {!isMessagesLoading &&
                         <>
                             {messages.map(message => {
-
                                 if (message.opponentId === currentDialog) {
-
-                                    // Searching for user in our dialogs array
-                                    let newUser = '';
-                                    if(message.opponentId){
-                                        users.forEach((user) => {
-                                            if(user.userId === message.opponentId){
-                                                newUser = user;
-                                            }
-                                        })
-                                    }
-
-
                                     return <Message
                                         key={message.id}
-                                        opponent={newUser}
+                                        opponent={findUserInUsersArray(message.opponentId)}
                                         from={message.from}
                                         messageText={message.messageText}
                                         time={message.time}
                                     />
+                                }else{
+                                    return null
                                 }
-                                return null
                             })}
                         </>
                     }
+
                     {!!isMessagesLoading &&
                         <Preloader />
                     }
-
                 </div>
 
                 {!!currentDialog &&
-                <Formik
-                    initialValues={{
-                        message: ''
-                    }}
-
-
-                    onSubmit={(values, actions, ...props) => {
-
-                        if (values.message.length > 0 && isMessageFetching === false && isMessagesLoading === false) {
-
-                            let promise = new Promise(async (resolve, reject) => {
-                                // Sending message
-                                let response = await sendMessage(currentDialog, values.message, Date.now())
-                                if(response === true){
-                                    resolve(null)
-                                }else{
-                                    reject('Sorry, there is no such user')
-                                }
-                            })
-                            promise
-                                .then(() => {
-                                    dialogsScrollTo();
-                                    actions.resetForm({message: ''})
-                                })
-                                .catch((error) => {
-                                    actions.setFieldError('general', error);
-                                })
-
-                        }
-
-                    }}
-
-
-                >{formik => {
-                    return (
-                        <Form className={s.sendMessageBlock}>
-                            <CustomField
-                                name={'message'}
-                                fieldType={'textarea'}
-                                placeholder={'Type something besides "ghbdtn" ;) '}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        if (!e.shiftKey) {
-                                            e.preventDefault();
-                                            formik.handleSubmit()
+                    <Formik
+                        initialValues={{
+                            message: ''
+                        }}
+                        onSubmit={(values, actions, ...props) => {
+                            submitSendMessage(values, actions);
+                        }}
+                    >{formik => {
+                        return (
+                            <Form className={s.sendMessageBlock}>
+                                <CustomField
+                                    name={'message'}
+                                    fieldType={'textarea'}
+                                    placeholder={'Type something besides "ghbdtn" ;) '}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            if (!e.shiftKey) {
+                                                e.preventDefault();
+                                                formik.handleSubmit()
+                                            }
                                         }
-                                    }
-                                }}
-                            />
-                            {formik.errors.general ? <div className={s.formSummaryError}>{formik.errors.general}</div> : null}
-                            {!(isMessageFetching || isMessagesLoading) &&
-                                <button type={'submit'} className={cn('button', 'button-success')}>
-                                    <img src={sendImg} alt="send message"/>
-                                </button>
-                            }
-                        </Form>
-                    );
-                }}
-
-                </Formik>
+                                    }}
+                                />
+                                {formik.errors.general ? <div className={s.formSummaryError}>{formik.errors.general}</div> : null}
+                                {!(isMessageFetching || isMessagesLoading) &&
+                                    <button type={'submit'} className={cn('button', 'button-success')}>
+                                        <img src={sendImg} alt="send message"/>
+                                    </button>
+                                }
+                            </Form>
+                        );
+                    }}
+                    </Formik>
                 }
+
                 {!currentDialog &&
                     <div className={s.noDialogMessage}>
                         <span>Choose user to start conversation</span>
@@ -202,6 +173,7 @@ const Dialogs = React.memo(({
         </div>
     );
 });
+
 
 
 export default Dialogs;

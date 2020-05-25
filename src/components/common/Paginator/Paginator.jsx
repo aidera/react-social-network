@@ -6,19 +6,83 @@ import {NavLink} from "react-router-dom";
 
 const Paginator = React.memo(({pageLink, totalElementsCount, onPageLimit, currentPage, ...props}) => {
 
+    const buttonsCount = Math.ceil(totalElementsCount/onPageLimit)
+    
+    const modeSwitcher = () => {
+        if(buttonsCount > 1){
+            if(currentPage <= 3 ){
+                return activePageBeginningMode();
+            }else if(currentPage > 3 && currentPage <= buttonsCount-3){
+                return activePageMiddleMode();
+            }else if(currentPage >= buttonsCount-2 && currentPage <= buttonsCount){
+                return activePageEndMode();
+            }
+        }
+    }
 
+    const activePageBeginningMode = () => {
+        let buttons = []
+        for(let i = 1; i < 6; i++){
+            buttons.push(pageButtonCreate(i));
+        }
+        return (
+            <>
+                {currentPage !== 1 &&
+                    prevButtonCreate(currentPage - 1)
+                }
+                {buttons}
+                {pageDelimiterCreate('delimeter')}
+                {pageButtonCreate(buttonsCount)}
+                {nextButtonCreate(currentPage + 1)}
+            </>
+        );
+    }
 
-    let pageButtonCreate = (pageId) => {
+    const activePageMiddleMode = () => {
+        return (
+            <>
+                {prevButtonCreate(currentPage-1)}
+                {pageButtonCreate(1)}
+                {pageDelimiterCreate('delimeter-1')}
+                {pageButtonCreate(currentPage-1)}
+                {pageButtonCreate(currentPage)}
+                {pageButtonCreate(currentPage+1)}
+                {pageDelimiterCreate('delimeter-2')}
+                {pageButtonCreate(buttonsCount)}
+                {nextButtonCreate(currentPage+1)}
+            </>
+        );
+    }
+
+    const activePageEndMode = () => {
+        let buttons = [];
+        for(let i = buttonsCount-4; i <= buttonsCount; i++){
+            buttons.push(pageButtonCreate(i));
+        }
+        return (
+            <>
+                {prevButtonCreate(currentPage-1)}
+                {pageButtonCreate(1)}
+                {pageDelimiterCreate('delimeter')}
+                {buttons}
+                {currentPage !== buttonsCount &&
+                    nextButtonCreate(currentPage+1)
+                }
+            </>
+        )
+    }
+
+    const pageButtonCreate = (pageId) => {
         return (
             <NavLink
-                    key={pageId}
-                    to={`${pageLink}?page=${pageId}&limit=${onPageLimit}`}
-                    className={currentPage === pageId ? s.selected : ''}
+                key={pageId}
+                to={`${pageLink}?page=${pageId}&limit=${onPageLimit}`}
+                className={currentPage === pageId ? s.selected : ''}
             >{pageId}</NavLink>
         )
     }
 
-    let nextButtonCreate = (pageId) => {
+    const nextButtonCreate = (pageId) => {
         return (
             <NavLink
                 key={'next page'}
@@ -27,7 +91,8 @@ const Paginator = React.memo(({pageLink, totalElementsCount, onPageLimit, curren
             >Next</NavLink>
         )
     }
-    let prevButtonCreate = (pageId) => {
+
+    const prevButtonCreate = (pageId) => {
         return (
             <NavLink
                 key={'prev page'}
@@ -37,7 +102,7 @@ const Paginator = React.memo(({pageLink, totalElementsCount, onPageLimit, curren
         )
     }
 
-    let pageDelimiterCreate = (pageId) => {
+    const pageDelimiterCreate = (pageId) => {
         return (
             <span key={pageId}>...</span>
         )
@@ -45,64 +110,14 @@ const Paginator = React.memo(({pageLink, totalElementsCount, onPageLimit, curren
 
 
 
-
-    let pagesCount = Math.ceil(totalElementsCount/onPageLimit)
-    let pages = [];
-
-
-
-
-    if(pagesCount > 1){
-
-        // First pages mode with 'Next page'
-        if(currentPage <= 3 ){
-            if(currentPage !== 1) {
-                pages.push(prevButtonCreate(currentPage - 1));
-            }
-            for(let i = 1; i < 6; i++){
-                pages.push(pageButtonCreate(i));
-            }
-            pages.push(pageDelimiterCreate('delimeter'));
-            pages.push(pageButtonCreate(pagesCount));
-            pages.push(nextButtonCreate(currentPage+1));
-
-        // Middle pages mode with 'Next page' and 'Prev page'
-        }else if(currentPage > 3 && currentPage <= pagesCount-3){
-
-            pages.push(prevButtonCreate(currentPage-1));
-            pages.push(pageButtonCreate(1));
-            pages.push(pageDelimiterCreate('delimeter-1'));
-            pages.push(pageButtonCreate(currentPage-1));
-            pages.push(pageButtonCreate(currentPage));
-            pages.push(pageButtonCreate(currentPage+1));
-            pages.push(pageDelimiterCreate('delimeter-2'));
-            pages.push(pageButtonCreate(pagesCount));
-            pages.push(nextButtonCreate(currentPage+1));
-
-        // Last pages mode with 'Prev page'
-        }else if(currentPage >= pagesCount-2 && currentPage <= pagesCount){
-
-            pages.push(prevButtonCreate(currentPage-1));
-            pages.push(pageButtonCreate(1));
-            pages.push(pageDelimiterCreate('delimeter'));
-            for(let i = pagesCount-4; i <= pagesCount; i++){
-                pages.push(pageButtonCreate(i));
-            }
-            if(currentPage !== pagesCount){
-                pages.push(nextButtonCreate(currentPage+1));
-            }
-
-
-        }
-
-    }
-
-
     return (
         <div className={s.pagination}>
-            {pages}
+            {modeSwitcher()}
         </div>
     )
+
 })
+
+
 
 export default Paginator;

@@ -8,9 +8,6 @@ import cn from 'classnames';
 
 
 
-
-/* Status demonstration and status redactor */
-/* No buttons submit. Used onBlur submit and onClick edit mode activation. Also with ESC button edit mode will off */
 const Status = React.memo(({
                                status,
                                updateUserStatus,
@@ -20,26 +17,16 @@ const Status = React.memo(({
 
 
 
-    /* Edit mode for status redactor */
     let [editMode, setEditMode] = useState(false);
     let [localStatus, setLocalStatus] = useState(status);
-
 
     const changeEditMode = (status) => {
         isOwner && setEditMode(status);
     }
 
-
-
-
-
-
     useEffect(() => {
         setLocalStatus(status);
     }, [status])
-
-
-
 
 
 
@@ -57,16 +44,13 @@ const Status = React.memo(({
             }
             {editMode &&
                 <Formik
-
                     initialValues={{
                         status: localStatus
                     }}
-
                     validationSchema={Yup.object({
                         status: Yup.string()
                             .max(300, 'sdv')
                     })}
-
                     onSubmit={async (values, actions) => {
                         changeEditMode(false);
                         await updateUserStatus(values.status)
@@ -74,11 +58,7 @@ const Status = React.memo(({
                                 changeEditMode(true);
                                 actions.setFieldError('general', error);
                             })
-
-
-
                     }}
-
                 >
                     {formik => (
                         <Form>
@@ -107,15 +87,11 @@ const Status = React.memo(({
                         </Form>
                         )
                     }
-
                 </Formik>
             }
         </div>
-    )
-
-
-})
-
+    );
+});
 
 
 

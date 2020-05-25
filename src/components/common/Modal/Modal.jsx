@@ -14,7 +14,6 @@ import hide from "../../../utils/animations/hide";
 class Modal extends React.PureComponent{
 
     state = {
-
         text: this.props.text || 'Are you sure?',
         buttonSuccessText: this.props.buttonSuccessText || 'Ok',
         buttonRejectText: this.props.buttonRejectText || '',
@@ -27,6 +26,7 @@ class Modal extends React.PureComponent{
         isLoading: false,
     }
 
+
     componentDidMount() {
         this.setState({
             modal: document.getElementsByClassName(s.modalContainer)[0]
@@ -38,17 +38,6 @@ class Modal extends React.PureComponent{
 
 
 
-    closeModalCallback = () => {
-        this.props.setIsOpen(false)
-
-        let newState = this.state.modal;
-        newState.style.display = 'none';
-    }
-
-
-
-
-
     cancelModal = () => {
         this.setState({
             isLoading: true
@@ -56,7 +45,7 @@ class Modal extends React.PureComponent{
             if(this.props.callbackCancel){
                 await this.props.callbackCancel();
             }
-            hide(this.state.modal, this.closeModalCallback);
+            hide(this.state.modal, this._closeModalCallback);
         });
     }
 
@@ -67,9 +56,8 @@ class Modal extends React.PureComponent{
         if(this.state.callbackResolve){
             await this.state.callbackResolve()
         }
-        hide(this.state.modal, this.closeModalCallback);
+        hide(this.state.modal, this._closeModalCallback);
     }
-
 
     rejectModal = async () => {
         this.setState({
@@ -78,9 +66,15 @@ class Modal extends React.PureComponent{
         if(this.state.callbackReject){
             await this.state.callbackReject()
         }
-        hide(this.state.modal, this.closeModalCallback);
+        hide(this.state.modal, this._closeModalCallback);
     }
 
+    _closeModalCallback = () => {
+        this.props.setIsOpen(false)
+
+        let newState = this.state.modal;
+        newState.style.display = 'none';
+    }
 
 
 
@@ -102,7 +96,6 @@ class Modal extends React.PureComponent{
                             <div onClick={this.resolveModal} className={cn('button', 'button-success')}>{this.state.buttonSuccessText}</div>
                         }
 
-
                         {!!this.state.buttonRejectText && !this.state.isLoading &&
                             <div onClick={this.rejectModal} className={cn('button', 'button-normal')}>{this.state.buttonRejectText}</div>
                         }
@@ -114,5 +107,7 @@ class Modal extends React.PureComponent{
     }
 
 }
+
+
 
 export default Modal;

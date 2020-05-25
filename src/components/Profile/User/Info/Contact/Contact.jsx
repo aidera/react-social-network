@@ -12,7 +12,6 @@ import youtubeImg from '../../../../../assets/images/youtube.svg';
 
 
 
-
 const Contact = ({id, link, name}) => {
 
     let img;
@@ -49,7 +48,6 @@ const Contact = ({id, link, name}) => {
        default:
             img = linkImg;
             break;
-
 
     }
 

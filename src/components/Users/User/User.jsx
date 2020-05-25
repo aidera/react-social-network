@@ -6,6 +6,8 @@ import PreloaderSmall from "../../common/PreloaderSmall/PreloaderSmall";
 import cn from 'classnames';
 import mailImg from '../../../assets/images/mail.svg';
 
+
+
 const User = React.memo(({
                              state,
                              follow,
@@ -15,17 +17,18 @@ const User = React.memo(({
                              ...props}) => {
 
 
-    let userImage = state.photos.small != null ? state.photos.small : defaultUserPhoto;
-
 
     return (
         <div data-id={state.id} className={s.user}>
+
             <NavLink to={`/profile/${state.id}`}>
-                <div className={s.avatar} style={{backgroundImage: `url(${userImage})`}} />
+                <div className={s.avatar} style={{backgroundImage: `url(${state.photos.small || defaultUserPhoto})`}} />
             </NavLink>
+
             <div className={s.description}>
                 <div className={s.name}>{state.name}</div>
             </div>
+
             {!!isAuth &&
                 <div className={s.buttons}>
                     {followingInProgress.some(id => id === state.id)
@@ -38,6 +41,7 @@ const User = React.memo(({
                     <NavLink to={`/dialogs/${state.id}`} className={cn('button', 'button-success', s.startConversation)}><img src={mailImg} alt="start conversation"/></NavLink>
                 </div>
             }
+
         </div>
     );
 })

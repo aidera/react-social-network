@@ -4,6 +4,7 @@ import {login, setIsLoading} from '../../redux/auth-reducer'
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
 import {getIsAuth, getCaptchaUrl, getIsLoading} from "../../redux/auth-selectors";
+import {Helmet} from "react-helmet";
 
 
 
@@ -16,15 +17,21 @@ class LoginContainer extends React.PureComponent {
             return <Redirect to={'/profile'}/>
         }
         return(
-            <Login
-                login={login}
-                captchaUrl={captchaUrl}
-                isLoading={isLoading}
-            />
+            <>
+                <Helmet>
+                    <title>Login</title>
+                </Helmet>
+                <Login
+                    login={login}
+                    captchaUrl={captchaUrl}
+                    isLoading={isLoading}
+                />
+            </>
         )
 
     }
 }
+
 
 
 let mapStateToProps = (state) =>( {
@@ -36,5 +43,7 @@ let mapDispatchToProps = {
     login,
     setIsLoading
 };
+
+
 
 export default connect(mapStateToProps,mapDispatchToProps)(LoginContainer);

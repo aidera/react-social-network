@@ -1,12 +1,22 @@
 import React from 'react';
 import s from './Music.module.sass';
+import {Helmet} from "react-helmet";
+
+
 
 function Music() {
     return (
-        <div className={s.music}>
-            Music
-        </div>
+        <>
+            <Helmet>
+                <title>Music</title>
+            </Helmet>
+            <div className={s.music}>
+                Music
+            </div>
+        </>
     );
 }
+
+
 
 export default Music;

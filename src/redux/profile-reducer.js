@@ -99,13 +99,16 @@ export const getUserProfile = (userId) =>  {
 
 export const getUserStatus = (userId) => async (dispatch) => {
 
+    dispatch(setIsLoadingStatus(true));
     dispatch(setUserStatus(''));
 
     if(userId){
         try{
             const response = await profileAPI.getStatus(userId);
             dispatch(setUserStatus(response));
+            dispatch(setIsLoadingStatus(false));
         }catch(error){
+            dispatch(setIsLoadingStatus(false));
             return Promise.reject('No such user or server error');
         }
 

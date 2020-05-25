@@ -15,11 +15,12 @@ import {getIsAuth} from "../../redux/auth-selectors";
 import {compose} from "redux";
 import {withRouter} from "react-router-dom";
 import * as qs from 'query-string';
+import {Helmet} from "react-helmet";
+
 
 
 class UsersContainer extends React.PureComponent {
-
-
+    
     state = {
         defaultCurrentPage: 1,
         currentPage: 0,
@@ -30,17 +31,31 @@ class UsersContainer extends React.PureComponent {
         debounceOperator: false
     }
 
-    // We need to return promise for requestUsers function in lifecycles
-    getUrlParams = () => {
+    componentDidMount() {
+        this.setUrlParams()
+            .then(() => {
+                this.requestUsers();
+                this.setState({currentLoadedPage: this.state.currentPage})
+            })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        this.setUrlParams()
+            .then(() => {
+                if(prevState.currentPage !== this.state.currentPage || prevState.onPageLimit !== this.state.onPageLimit ){
+                    this.setState({currentLoadedPage: this.state.currentPage});
+                    this.requestUsers();
+                }
+            })
+    }
+    
+    setUrlParams = () => {
         return new Promise((resolve) => {
-            // get string from url
             const urlQuery = this.props.location.search;
-            // parse it
             let  parsedUrlQuery = qs.parse(urlQuery,{ ignoreQueryPrefix: true })
-            // convert to number
             parsedUrlQuery.page = Number(parsedUrlQuery.page);
             parsedUrlQuery.limit = Number(parsedUrlQuery.limit);
-            // set page and limit to state
+
             this.setState({
                 currentPage: parsedUrlQuery.page || this.state.defaultCurrentPage,
                 onPageLimit: parsedUrlQuery.limit || this.state.defaultOnPageLimit,
@@ -56,13 +71,11 @@ class UsersContainer extends React.PureComponent {
 
 
     onscrollTargetVisible = (target) => {
-
         if(target.current){
-            // Element position
+
             let targetPosition = {
                     top: window.pageYOffset + target.current.getBoundingClientRect().top,
                 },
-                // Window position
                 windowPosition = {
                     top: window.pageYOffset + window.innerHeight
                 };
@@ -93,40 +106,19 @@ class UsersContainer extends React.PureComponent {
                 }
             }
         }
-
     };
 
 
-    componentDidMount() {
-        this.getUrlParams()
-            .then(() => {
-                this.requestUsers();
-                this.setState({currentLoadedPage: this.state.currentPage})
-            })
-
-
-    }
-
-
-    componentDidUpdate(prevProps, prevState) {
-        this.getUrlParams()
-            .then(() => {
-                if(prevState.currentPage !== this.state.currentPage || prevState.onPageLimit !== this.state.onPageLimit ){
-                    this.setState({currentLoadedPage: this.state.currentPage});
-                    this.requestUsers();
-                }
-            })
-
-    }
-
 
     render() {
-
         const {users, isFetching, isLoading, followingInProgress, follow, unfollow, isAuth, totalUsersCount} = this.props;
 
         return(
-
-            <Users
+            <>
+                <Helmet>
+                    <title>Users</title>
+                </Helmet>
+                <Users
                     users={users}
                     currentPage={this.state.currentPage}
                     totalUsersCount={totalUsersCount}
@@ -138,12 +130,13 @@ class UsersContainer extends React.PureComponent {
                     follow={follow}
                     unfollow={unfollow}
                     isAuth={isAuth}
-                    requestUsers={this.props.requestUsers}
-                    requestAddUsers={this.props.requestAddUsers}
                 />
+            </>
         )
     }
 }
+
+
 
 let mapStateToProps = (state) => {
     return {
@@ -157,6 +150,7 @@ let mapStateToProps = (state) => {
 };
 
 
+
 let mapDispatchToPropsObj = {
     requestUsers,
     requestAddUsers,
@@ -166,8 +160,8 @@ let mapDispatchToPropsObj = {
 };
 
 
+
 export default compose(
     connect(mapStateToProps,mapDispatchToPropsObj),
     withRouter,
 )(UsersContainer);
-

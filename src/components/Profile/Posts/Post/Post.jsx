@@ -7,10 +7,6 @@ import defaultUserImg from '../../../../assets/images/default-user.png';
 
 
 
-/* Modal window used in parent Posts component. Modal functions should have postId as parameter */
-/* There is 2 different modal windows: to delete post and to like post without authorization (just redirect to login page) */
-/* User shouldn't see delete button without auth and have modal window by trying to like post */
-
 const Post = React.memo( ({
                               postID,
                               children,
@@ -26,9 +22,7 @@ const Post = React.memo( ({
                               ...props}) => {
 
     return (
-
         <div className={s.post}>
-
 
             <div className={s.avatar}>
                 <img src={userPhoto || defaultUserImg} alt="avatar"/>
@@ -47,7 +41,6 @@ const Post = React.memo( ({
                 {!isAuth &&
                     <div title={'Like post'} onClick={modalCallLikePost} className={s.like}><img src={likeBeforeImg} alt="like"/></div>
                 }
-
             </div>
 
             {isOwner &&
@@ -55,9 +48,9 @@ const Post = React.memo( ({
             }
 
         </div>
-
-
     );
-})
+});
+
+
 
 export default Post;

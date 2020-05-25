@@ -57,12 +57,18 @@ export const deleteCaptcha = () => ({ type: DELETE_CAPTCHA });
 export const setIsLoading = (status) => ({ type: SET_IS_LOADING, status });
 
 export const checkAuth = () => async (dispatch) => {
-    const response = await authAPI.checkAuth()
 
-    if(response.resultCode === 0){
-        const {id, login, email} = response.data;
-        dispatch(setAuthUserData(id, email, login, true));
-    }
+    return new Promise(async (resolve, reject) => {
+        const checkout = await authAPI.checkAuth()
+        if(checkout.data){
+            if(checkout.resultCode === 0){
+                const {id, login, email} = checkout.data;
+                dispatch(setAuthUserData(id, email, login, true));
+            }
+            return resolve(checkout)
+        }
+        return new Error('Server error')
+    })
 
 }
 

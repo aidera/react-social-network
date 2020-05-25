@@ -18,12 +18,23 @@ import {
     getStatus
 } from "../../redux/profile-selectors";
 import {getIsAuth, getUserId} from "../../redux/auth-selectors";
+import {Helmet} from "react-helmet";
+
 
 
 class ProfileContainer extends React.PureComponent {
 
-    /* Checking for userId in URL. If it's not - take userId in auth or redirect to login page */
-    refreshProfile = () => {
+    componentDidMount() {
+        this.loadProfile();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.match.params.userId !== this.props.match.params.userId || prevProps.isAuth !== this.props.isAuth){
+            this.loadProfile();
+        }
+    }
+
+    loadProfile = () => {
         const {getUserProfile, authUserId} = this.props;
 
         let userId = this.props.match.params.userId;
@@ -34,38 +45,37 @@ class ProfileContainer extends React.PureComponent {
             }
         }
         getUserProfile(userId);
-
     }
 
-    componentDidMount() {
-        this.refreshProfile();
-    }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        (prevProps.match.params.userId !== this.props.match.params.userId || prevProps.isAuth !== this.props.isAuth) && this.refreshProfile();
-    }
 
     render () {
 
         return (
-            <Profile
-                isOwner={!this.props.match.params.userId}
+            <>
+                <Helmet>
+                    <title>{!!this.props.profile ? this.props.profile.fullName+' - Profile' : 'Profile'}</title>
+                </Helmet>
+                <Profile
+                    isOwner={!this.props.match.params.userId}
 
-                profile={this.props.profile}
-                isLoadingProfileInfoChanges={this.props.isLoadingProfileInfoChanges}
-                saveProfileInfo={this.props.saveProfileInfo}
+                    profile={this.props.profile}
+                    isLoadingProfileInfoChanges={this.props.isLoadingProfileInfoChanges}
+                    saveProfileInfo={this.props.saveProfileInfo}
 
-                status={this.props.status}
-                isLoadingStatus={this.props.isLoadingStatus}
-                updateUserStatus={this.props.updateUserStatus}
+                    status={this.props.status}
+                    isLoadingStatus={this.props.isLoadingStatus}
+                    updateUserStatus={this.props.updateUserStatus}
 
-                isLoadingAvatar={this.props.isLoadingAvatar}
-                savePhoto={this.props.savePhoto}
+                    isLoadingAvatar={this.props.isLoadingAvatar}
+                    savePhoto={this.props.savePhoto}
 
-            />
+                />
+            </>
         )
     }
 }
+
 
 
 let mapStateToProps = (state) => ({
@@ -77,7 +87,6 @@ let mapStateToProps = (state) => ({
     isAuth: getIsAuth(state),
     authUserId: getUserId(state)
 });
-
 
 
 

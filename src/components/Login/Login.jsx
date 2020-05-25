@@ -7,8 +7,8 @@ import cn from 'classnames';
 import PreloaderSmall from "../common/PreloaderSmall/PreloaderSmall";
 
 
-const Login = React.memo(({login, captchaUrl, isLoading, setIsLoading, ...props}) => {
 
+const Login = React.memo(({login, captchaUrl, isLoading, setIsLoading, ...props}) => {
 
     return (
         <div className={s.loginPage}>
@@ -87,7 +87,6 @@ const Login = React.memo(({login, captchaUrl, isLoading, setIsLoading, ...props}
                     );
                 }}
 
-
             </Formik>
 
             <div className={s.testAccountContainer}>
@@ -102,5 +101,7 @@ const Login = React.memo(({login, captchaUrl, isLoading, setIsLoading, ...props}
         </div>
     )
 })
+
+
 
 export default Login;

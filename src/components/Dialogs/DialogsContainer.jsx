@@ -12,6 +12,7 @@ import {
     getUsers
 } from "../../redux/dialogs-selectors";
 import {withRouter} from "react-router-dom";
+import {Helmet} from "react-helmet";
 
 
 
@@ -19,12 +20,27 @@ class DialogsContainer extends React.PureComponent{
 
     state = {
         currentDialog: Number(this.props.match.params.dialogId),
-        userFromUrl: false,
-        users: this.props.users
+        userFromUrl: false
     }
 
-    /* Checking for dialogId in URL. If it's not - then use default page */
-    refreshDialogs = () => {
+    componentDidMount () {
+        this.setCurrentDialogFromUrl();
+        this.checkUserFromCurrentDialog();
+        this.setUsersFromDialogsArray(this.props.dialogs);
+
+    }
+
+    componentDidUpdate (prevProps, prevState) {
+        this.setCurrentDialogFromUrl();
+        if(prevState.currentDialog !== this.state.currentDialog){
+            this.checkUserFromCurrentDialog();
+        }
+        if(prevProps.dialogs !== this.props.dialogs){
+            this.setUsersFromDialogsArray(this.props.dialogs);
+        }
+    }
+
+    setCurrentDialogFromUrl = () => {
         let dialogId = Number(this.props.match.params.dialogId);
         this.setState({
             currentDialog: dialogId
@@ -32,18 +48,15 @@ class DialogsContainer extends React.PureComponent{
 
     }
 
-    /* To check URL in messages-block and then show user name or error  */
-    checkUserFromUrl = () => {
+    checkUserFromCurrentDialog = () => {
         if(!!this.state.currentDialog) {
             this.props.getUserFromServer(this.state.currentDialog)
                 .then((response) => {
-                    console.log(response)
                     this.setState({
                         userFromUrl: response
                     });
                 })
                 .catch((error) => {
-                    console.log(error)
                     this.setState({
                         userFromUrl: false
                     });
@@ -51,8 +64,7 @@ class DialogsContainer extends React.PureComponent{
         }
     }
 
-    /* We have dialogs arr in our reducer. We need to map each dialog for userId and get him from the server*/
-    getUsersFromDialogs = (dialogs) => {
+    setUsersFromDialogsArray = (dialogs) => {
         dialogs.forEach(dialog => {
             if(dialog.opponentId){
                 this.props.setUser(dialog.opponentId)
@@ -61,42 +73,38 @@ class DialogsContainer extends React.PureComponent{
 
     }
 
-
-
-
-
-    componentDidMount () {
-        this.refreshDialogs();
-        this.checkUserFromUrl();
-        this.getUsersFromDialogs(this.props.dialogs);
-
+    findUserInUsersArray = (userId) => {
+        let thisUser = '';
+        this.props.users.forEach((user) => {
+            if(user.userId === userId){
+                thisUser = user;
+            }
+        })
+        return thisUser;
     }
 
-    componentDidUpdate (prevProps, prevState) {
-        this.refreshDialogs();
-        if(prevProps.dialogs !== this.props.dialogs){
-            this.getUsersFromDialogs(this.props.dialogs);
-        }
-        if(prevState.currentDialog !== this.state.currentDialog){
-            this.checkUserFromUrl();
-        }
 
-    }
 
     render () {
         return (
-            <Dialogs
-                currentDialog={this.state.currentDialog}
-                userFromUrl={this.state.userFromUrl}
-                dialogs={this.props.dialogs}
-                messages={this.props.messages}
-                users={this.props.users}
-                sendMessage={this.props.sendMessage}
-                setDialog={this.props.setDialog}
-                getUsersFromDialogs={this.props.getUsersFromDialogs}
-                isMessageFetching={this.props.isMessageFetching}
-                isMessagesLoading={this.props.isMessagesLoading}
-            />
+            <>
+                <Helmet>
+                    <title>{!!this.state.userFromUrl && this.props.isMessagesLoading === false ? this.state.userFromUrl.fullName+' - messages' : 'Dialogs'}</title>
+                </Helmet>
+                <Dialogs
+                    currentDialog={this.state.currentDialog}
+                    userFromUrl={this.state.userFromUrl}
+                    dialogs={this.props.dialogs}
+                    messages={this.props.messages}
+                    users={this.props.users}
+                    sendMessage={this.props.sendMessage}
+                    setDialog={this.props.setDialog}
+                    getUsersFromDialogs={this.props.getUsersFromDialogs}
+                    isMessageFetching={this.props.isMessageFetching}
+                    isMessagesLoading={this.props.isMessagesLoading}
+                    findUserInUsersArray={this.findUserInUsersArray}
+                />
+            </>
         );
     }
 
@@ -113,7 +121,6 @@ let mapStateToProps = (state) => {
         isMessagesLoading: getIsMessagesLoading(state)
     }
 };
-
 
 
 

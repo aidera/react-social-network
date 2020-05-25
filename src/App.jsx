@@ -10,6 +10,7 @@ import Preloader from "./components/common/Preloader/Preloader";
 import HeaderContainer from './components/Header/HeaderContainer'
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
+import Modal from "./components/common/Modal/Modal";
 
 
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
@@ -24,8 +25,9 @@ const ErrorContent = React.lazy(() => import('./components/ErrorContent/ErrorCon
 
 class App extends React.Component {
 
-    catchAllUnhandledErrors = (reason, promise) => {
-        console.log('Some error occured');
+    state = {
+        isModalOpen: false,
+        modalErrorText: 'Error'
     }
 
     componentDidMount() {
@@ -37,27 +39,35 @@ class App extends React.Component {
         window.removeEventListener('unhandledrejection', this.catchAllUnhandledErrors);
     }
 
+    catchAllUnhandledErrors = (promise) => {
+        this.setIsModalOpen(promise.reason.message);
+    }
+
+    setIsModalOpen = (error) => {
+        this.setState({
+            isModalOpen: true,
+            modalErrorText: error
+        })
+    }
+
+
 
     render() {
         if (!this.props.initialized) {
             return <div className={'preloader-container'}><Preloader/></div>
         }
 
-
-
-        // app
-        //    - header
-        //    - main
-        //       - width-wrapper
-        //          - content-wrapper
-        //             - navbar
-        //             - content
-        //    - footer
-
-
         return (
-
             <div className='app'>
+
+                {this.state.isModalOpen &&
+                    <Modal
+                        text={this.state.modalErrorText}
+                        buttonSuccessText={'Ok'}
+                        isOpen={this.state.isModalOpen}
+                        setIsOpen={this.setIsModalOpen}
+                    />
+                }
 
                 <HeaderContainer/>
 
@@ -117,20 +127,24 @@ class App extends React.Component {
                 <Footer />
 
             </div>
-
-
         );
     }
 }
 
 
+
 let mapStateToProps = (state) => ({
     initialized: getInitialized(state)
 })
+
+
+
 const AppContainer = compose(
     withRouter,
     connect(mapStateToProps, {initializeApp})
 )(App)
+
+
 
 const SamuraiJSApp = (props) => {
     return (
@@ -141,6 +155,8 @@ const SamuraiJSApp = (props) => {
         </BrowserRouter>
     );
 };
+
+
 
 export default SamuraiJSApp;
 

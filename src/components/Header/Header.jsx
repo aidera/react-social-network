@@ -6,11 +6,10 @@ import menuImg from '../../assets/images/menu.svg'
 import MobileMenu from "./MobileMenu/MobileMenu";
 
 
+
 const Header = React.memo( ({login, isAuth, logout, ...props}) => {
 
-
     let [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false)
-
 
     const openMobileMenu = () => {
         setIsOpenMobileMenu(true)
@@ -19,6 +18,7 @@ const Header = React.memo( ({login, isAuth, logout, ...props}) => {
     const closeMobileMenu = () => {
         setIsOpenMobileMenu(false)
     }
+
 
 
     return (
@@ -48,10 +48,10 @@ const Header = React.memo( ({login, isAuth, logout, ...props}) => {
             {isOpenMobileMenu &&
                 <MobileMenu closeMobileMenu={closeMobileMenu} />
             }
-
-
         </>
     );
 });
+
+
 
 export default Header;
