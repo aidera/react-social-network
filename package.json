@@ -21,11 +21,11 @@
     "react-router-dom": "^5.2.0",
     "react-router-redux": "^4.0.8",
     "react-scripts": "3.4.1",
-    "react-sticky": "^6.0.3",
     "redux": "^4.0.5",
     "redux-form": "^8.3.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
+    "typescript": "^3.9.3",
     "yup": "^0.28.5"
   },
   "scripts": {
@@ -52,8 +52,22 @@
     ]
   },
   "devDependencies": {
+    "@types/animejs": "^3.1.1",
+    "@types/autosize": "^3.0.7",
+    "@types/axios": "^0.14.0",
+    "@types/classnames": "^2.2.10",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.5",
+    "@types/query-string": "^6.3.0",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-helmet": "^6.0.0",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/yup": "^0.29.0",
     "gh-pages": "^2.2.0",
     "node-sass": "^4.14.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "sass": "^1.26.5"
   }
 }

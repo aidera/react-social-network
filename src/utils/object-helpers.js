@@ -6,3 +6,7 @@ export const updateObjectInArray = (items, itemId, objPropName, newObjProps) => 
         return item;
     })
 }
+
+export const getPropertyInObject = function (propertyName, obj) {
+    return obj[propertyName];
+};
