@@ -27,7 +27,7 @@ export type UserType = {
 export type UserTypeFromUsersPageApi = {
     id: number
     name: string
-    status: string
+    status: string | null
     photos: UserPhotosType
     followed: boolean
 }

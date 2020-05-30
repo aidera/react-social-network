@@ -1,7 +1,7 @@
 import {
     requestUsers,
     follow,
-    unfollow, requestAddUsers, setIsLoading
+    unfollow, requestAddUsers, actions
 } from '../../redux/users-reducer'
 import Users from './Users'
 import {connect} from "react-redux"
@@ -190,7 +190,7 @@ const mapDispatchToProps: MapDispatchToProps = {
     requestAddUsers,
     follow,
     unfollow,
-    setIsLoading
+    setIsLoading: actions.setIsLoading
 }
 
 

@@ -1,11 +1,11 @@
 import Dialogs from './Dialogs'
 import React from 'react'
 import {
+    actions,
     setUser,
     sendMessage,
-    setDialog,
-    setCurrentDialogId,
-    setCurrentUser
+    setCurrentUser,
+    checkUser
 } from '../../redux/dialogs-reducer'
 import {connect} from "react-redux"
 import {withAuthRedirect} from "../../hoc/withAuthRedirect"
@@ -44,6 +44,7 @@ type MapDispatchToPropsType = {
     sendMessage: (userId: number, newMessage: string, date: number) => void
     setUser: (userId: number) => void
     setDialog: (userId: number) => void
+    checkUser: (userId: number) => any
 }
 
 type PathPropsType = {
@@ -72,10 +73,25 @@ class DialogsContainer extends React.PureComponent<PropsType>{
     }
 
     setCurrentDialogIdFromUrl = () => {
+        // debugger
         const dialogId = this.props.match.params.dialogId
         const dialogIdNumber = Number(dialogId)
         if (dialogId && dialogIdNumber !== this.props.currentDialogId) {
-            this.props.setCurrentDialogId(dialogIdNumber)
+            const promise = new Promise((resolve, reject) => {
+                const checkUserExist = this.props.checkUser(dialogIdNumber)
+                if(checkUserExist) {
+                    resolve('User exist')
+                }else{
+                    reject('No such user')
+                }
+            })
+            promise
+                .then(() => {
+                    this.props.setCurrentDialogId(dialogIdNumber)
+                })
+                .catch(() => {
+                    this.props.setCurrentDialogId(null)
+                })
         }
         if(!dialogId && dialogIdNumber !== this.props.currentDialogId){
             this.props.setCurrentDialogId(null)
@@ -149,11 +165,12 @@ const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
 }
 
 const mapDispatchToProps: MapDispatchToPropsType = {
-    setCurrentDialogId,
+    setCurrentDialogId: actions.setCurrentDialogId,
     setCurrentUser,
     sendMessage,
     setUser,
-    setDialog
+    setDialog: actions.setDialog,
+    checkUser
 }
 
 

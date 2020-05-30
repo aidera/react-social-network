@@ -109,6 +109,7 @@ const Dialogs = React.memo((props: PropsType) => {
     const userFullName = currentUser && currentUser.fullName
 
 
+
     return (
         <div className={s.dialogs}>
 
@@ -190,7 +191,7 @@ const Dialogs = React.memo((props: PropsType) => {
                     </Formik>
                 }
 
-                {!currentDialogId &&
+                {(!currentDialogId || !currentUser) &&
                     <div className={s.noDialogMessage}>
                         <span>Choose user to start conversation</span>
                     </div>

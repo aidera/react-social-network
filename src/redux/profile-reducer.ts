@@ -1,16 +1,10 @@
-import {profileAPI} from "../api/api"
+import {profileAPI, ResultCodesEnum} from "../api/api"
 import {UserContactsType, UserPhotosType, UserType} from "../types/User"
 import {ThunkAction} from "redux-thunk"
-import {AppStateType} from "./redux-store"
+import {AppStateType, InferActionsTypes} from "./redux-store"
 
 
 
-const SET_USER_PROFILE = 'profile/SET_USER_PROFILE'
-const SET_USER_STATUS = 'profile/SET_USER_STATUS'
-const SAVE_PHOTO_SUCCESS = 'profile/SAVE_PHOTO_SUCCESS'
-const SET_IS_LOADING_STATUS = 'profile/SET_IS_LOADING_STATUS'
-const SET_IS_LOADING_AVATAR = 'profile/SET_IS_LOADING_AVATAR'
-const SET_IS_LOADING_PROFILE_INFO_CHANGES = 'profile/SET_IS_LOADING_PROFILE_INFO_CHANGES'
 
 
 
@@ -28,19 +22,19 @@ export type InitialStateType = typeof initialState
 const profileReducer = (state = initialState, action: ActionTypes): InitialStateType => {
     switch (action.type) {
 
-        case SET_USER_PROFILE:
+        case 'profile/SET_USER_PROFILE':
             return {
                 ...state,
                 profile: action.profile
             }
 
-        case SET_USER_STATUS:
+        case 'profile/SET_USER_STATUS':
             return {
                 ...state,
                 status: action.status
             }
 
-        case SAVE_PHOTO_SUCCESS:
+        case 'profile/SAVE_PHOTO_SUCCESS':
             if(state.profile){
                 return {
                     ...state,
@@ -50,19 +44,19 @@ const profileReducer = (state = initialState, action: ActionTypes): InitialState
                 return state
             }
 
-        case SET_IS_LOADING_STATUS:
+        case 'profile/SET_IS_LOADING_STATUS':
             return {
                 ...state,
                 isLoadingStatus: action.status
             }
 
-        case SET_IS_LOADING_PROFILE_INFO_CHANGES:
+        case 'profile/SET_IS_LOADING_PROFILE_INFO_CHANGES':
             return {
                 ...state,
                 isLoadingProfileInfoChanges: action.status
             }
 
-        case SET_IS_LOADING_AVATAR:
+        case 'profile/SET_IS_LOADING_AVATAR':
             return {
                 ...state,
                 isLoadingAvatar: action.status
@@ -77,43 +71,30 @@ const profileReducer = (state = initialState, action: ActionTypes): InitialState
 
 
 
-type ActionTypes = SetUserProfileActionType | SetUserStatusActionType | SavePhotoSuccessActionType | SetIsLoadingStatusActionType | SetIsLoadingProfileInfoChangesActionType | SetIsLoadingAvatarActionType
+type ActionTypes = InferActionsTypes<typeof actions>
 
-type SetUserProfileActionType = {
-    type: typeof SET_USER_PROFILE
-    profile: UserType | null
-}
-export const setUserProfile = (profile: UserType): SetUserProfileActionType => ({ type: SET_USER_PROFILE,  profile})
 
-type SetUserStatusActionType = {
-    type: typeof SET_USER_STATUS
-    status: string | null
-}
-export const setUserStatus = (status: string | null): SetUserStatusActionType => ({ type: SET_USER_STATUS,  status})
+export const actions = {
+    setUserProfile: (profile: UserType) =>
+        ({ type: 'profile/SET_USER_PROFILE',  profile} as const),
 
-type SavePhotoSuccessActionType = {
-    type: typeof SAVE_PHOTO_SUCCESS
-    photos: UserPhotosType
-}
-export const savePhotoSuccess = (photos: UserPhotosType): SavePhotoSuccessActionType => ({ type: SAVE_PHOTO_SUCCESS,  photos})
+    setUserStatus: (status: string | null) =>
+        ({ type: 'profile/SET_USER_STATUS',  status} as const),
 
-type SetIsLoadingStatusActionType = {
-    type: typeof SET_IS_LOADING_STATUS
-    status: boolean
-}
-export const setIsLoadingStatus = (status: boolean): SetIsLoadingStatusActionType => ({ type: SET_IS_LOADING_STATUS,  status})
+    savePhotoSuccess: (photos: UserPhotosType) =>
+        ({ type: 'profile/SAVE_PHOTO_SUCCESS',  photos} as const),
 
-type SetIsLoadingProfileInfoChangesActionType = {
-    type: typeof SET_IS_LOADING_PROFILE_INFO_CHANGES
-    status: boolean
-}
-export const setIsLoadingProfileInfoChanges = (status: boolean): SetIsLoadingProfileInfoChangesActionType => ({ type: SET_IS_LOADING_PROFILE_INFO_CHANGES,  status})
+    setIsLoadingStatus: (status: boolean) =>
+        ({ type: 'profile/SET_IS_LOADING_STATUS',  status} as const),
 
-type SetIsLoadingAvatarActionType = {
-    type: typeof SET_IS_LOADING_AVATAR
-    status: boolean
+    setIsLoadingProfileInfoChanges: (status: boolean) =>
+        ({ type: 'profile/SET_IS_LOADING_PROFILE_INFO_CHANGES',  status} as const),
+
+    setIsLoadingAvatar: (status: boolean) =>
+        ({ type: 'profile/SET_IS_LOADING_AVATAR',  status} as const)
 }
-export const setIsLoadingAvatar = (status: boolean): SetIsLoadingAvatarActionType => ({ type: SET_IS_LOADING_AVATAR,  status})
+
+
 
 
 
@@ -124,30 +105,30 @@ export const getUserProfile = (userId: number): ThunkVoidType => {
     return async (dispatch) => {
         if(userId){
             const response = await profileAPI.getUsersProfile(userId)
-            dispatch(setUserProfile(response))
-            dispatch(getUserStatus(userId))
+            dispatch(actions.setUserProfile(response))
+            await dispatch(getUserStatus(userId))
         }
     }
 }
 
 export const getUserStatus = (userId: number): ThunkVoidType => async (dispatch) => {
-    dispatch(setIsLoadingStatus(true))
-    dispatch(setUserStatus(null))
+    dispatch(actions.setIsLoadingStatus(true))
+    dispatch(actions.setUserStatus(null))
 
     if(userId){
         const response = await profileAPI.getStatus(userId)
-        dispatch(setUserStatus(response))
-        dispatch(setIsLoadingStatus(false))
+        dispatch(actions.setUserStatus(response))
+        dispatch(actions.setIsLoadingStatus(false))
     }
 }
 
 export const updateUserStatus = (status: string | null): ThunkReturnType => async (dispatch) => {
-    dispatch(setIsLoadingStatus(true))
+    dispatch(actions.setIsLoadingStatus(true))
 
     const response = await profileAPI.updateStatus(status)
-    dispatch(setIsLoadingStatus(false))
-    if(response.data.resultCode === 0){
-        dispatch(setUserStatus(status))
+    dispatch(actions.setIsLoadingStatus(false))
+    if(response.data.resultCode === ResultCodesEnum.Success){
+        dispatch(actions.setUserStatus(status))
         return Promise.resolve('Status updated')
     }else{
         return Promise.reject('Server error')
@@ -155,12 +136,12 @@ export const updateUserStatus = (status: string | null): ThunkReturnType => asyn
 }
 
 export const savePhoto = (file: File): ThunkVoidType => async (dispatch) => {
-    dispatch(setIsLoadingAvatar(true))
+    dispatch(actions.setIsLoadingAvatar(true))
     const response = await profileAPI.savePhoto(file)
-    dispatch(setIsLoadingAvatar(false))
+    dispatch(actions.setIsLoadingAvatar(false))
 
-    if(response.data.resultCode === 0){
-        dispatch(savePhotoSuccess(response.data.data.photos))
+    if(response.resultCode === ResultCodesEnum.Success){
+        dispatch(actions.savePhotoSuccess(response.data.photos))
     }
 }
 
@@ -172,12 +153,12 @@ export const saveProfileInfo = (profileInfo: {
     contacts: UserContactsType
 }): ThunkReturnType => async (dispatch, getState) => {
 
-    dispatch(setIsLoadingProfileInfoChanges(true))
+    dispatch(actions.setIsLoadingProfileInfoChanges(true))
 
     const userId: number | null = await getState().auth.userId
     const response = await profileAPI.saveProfileInfo(profileInfo)
 
-    dispatch(setIsLoadingProfileInfoChanges(false))
+    dispatch(actions.setIsLoadingProfileInfoChanges(false))
 
     if(response.data.resultCode === 0){
         if(userId){

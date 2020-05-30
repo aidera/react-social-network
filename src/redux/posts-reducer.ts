@@ -1,11 +1,6 @@
-import {PostType} from "../types/Post";
-import {ThunkAction} from "redux-thunk";
-import {AppStateType} from "./redux-store";
-
-const ADD_POST = 'posts/ADD-POST';
-const DELETE_POST = 'posts/DELETE_POST';
-const LIKE_POST = 'posts/LIKE_POST';
-const DISLIKE_POST = 'posts/DISLIKE_POST';
+import {PostType} from "../types/Post"
+import {ThunkAction} from "redux-thunk"
+import {AppStateType, InferActionsTypes} from "./redux-store"
 
 
 
@@ -19,7 +14,7 @@ let initialState = {
     ] as Array<PostType>,
     maxPostId: 4,
     likedPosts: [1,4] as Array<number>,
-};
+}
 
 export type InitialStateType = typeof initialState
 
@@ -29,117 +24,109 @@ const postReducer = (state = initialState, action: ActionTypes): InitialStateTyp
 
     switch (action.type) {
 
-        case ADD_POST:
+        case 'posts/ADD-POST':
             return {
                 ...state,
                 posts: [...state.posts, {id: state.maxPostId+1, text: action.newPost,likesCount: 0}],
                 maxPostId: state.maxPostId+1
-            };
+            }
 
-        case DELETE_POST:
-            let deletePostArr = [...state.posts];
+        case 'posts/DELETE_POST':
+            let deletePostArr = [...state.posts]
             for(let i = 0; i < deletePostArr.length; i++){
                 if(deletePostArr[i].id === action.postId){
-                    deletePostArr.splice(i, 1);
+                    deletePostArr.splice(i, 1)
                 }
             }
+
             return {
                 ...state,
                 posts: deletePostArr
-            };
+            }
 
-        case LIKE_POST:
+        case 'posts/LIKE_POST':
             let isPostLiked = state.likedPosts.some((number) => number === action.postId)
             if(!isPostLiked){
-                let newLikedPostsArr = state.likedPosts;
-                newLikedPostsArr.push(action.postId);
-                let likePostsArr =  [...state.posts];
-                for(let i = 0; i < likePostsArr.length; i++){
+                let newLikedPostsArr = state.likedPosts
+                newLikedPostsArr.push(action.postId)
+                let likePostsArr =  [...state.posts]
+                for(let i = 0 ;i < likePostsArr.length; i++){
                     if(likePostsArr[i].id === action.postId){
-                        likePostsArr[i].likesCount ++;
+                        likePostsArr[i].likesCount ++
                     }
                 }
+
                 return {
                     ...state,
                     likedPosts: newLikedPostsArr,
                     posts: likePostsArr
-                };
+                }
             }
-            return state;
+            return state
 
-        case DISLIKE_POST:
+        case 'posts/DISLIKE_POST':
             let isPostLiked2 = state.likedPosts.some((number) => number === action.postId)
             if(isPostLiked2){
-                let newLikedPostsArr = state.likedPosts.filter((number) => number !== action.postId);
-                let dislikePostsArr =  [...state.posts];
+                let newLikedPostsArr = state.likedPosts.filter((number) => number !== action.postId)
+                let dislikePostsArr =  [...state.posts]
                 for(let i = 0; i < dislikePostsArr.length; i++){
                     if(dislikePostsArr[i].id === action.postId){
-                        dislikePostsArr[i].likesCount --;
+                        dislikePostsArr[i].likesCount --
                     }
                 }
                 return {
                     ...state,
                     likedPosts: newLikedPostsArr,
                     posts: dislikePostsArr
-                };
+                }
             }
-            return state;
+            return state
 
 
         default:
-            return state;
+            return state
 
     }
 }
 
 
 
-type ActionTypes = AddPostSuccessActionType | DeletePostSuccessActionType | LikePostSuccessActionType | DislikePostSuccessActionType
+type ActionTypes = InferActionsTypes<typeof actions>
 
-type AddPostSuccessActionType = {
-    type: typeof ADD_POST
-    newPost: string
-}
-export const addPostSuccess = (newPost: string):AddPostSuccessActionType => ({ type: ADD_POST, newPost});
+export const actions = {
+    addPostSuccess: (newPost: string) =>
+        ({ type: 'posts/ADD-POST', newPost} as const),
 
-type DeletePostSuccessActionType = {
-    type: typeof DELETE_POST
-    postId: number
-}
-export const deletePostSuccess = (postId: number):DeletePostSuccessActionType => ({ type: DELETE_POST, postId});
+    deletePostSuccess: (postId: number) =>
+        ({ type: 'posts/DELETE_POST', postId} as const),
 
-type LikePostSuccessActionType = {
-    type: typeof LIKE_POST
-    postId: number
-}
-export const likePostSuccess = (postId: number): LikePostSuccessActionType => ({ type: LIKE_POST, postId});
+    likePostSuccess: (postId: number) =>
+        ({ type: 'posts/LIKE_POST', postId} as const),
 
-type DislikePostSuccessActionType = {
-    type: typeof DISLIKE_POST
-    postId: number
+    dislikePostSuccess: (postId: number) =>
+        ({ type: 'posts/DISLIKE_POST', postId} as const),
 }
-export const dislikePostSuccess = (postId: number): DislikePostSuccessActionType => ({ type: DISLIKE_POST, postId});
 
 
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
 
 export const addPost = (newPost: string): ThunkType => async (dispatch) => {
-    await dispatch(addPostSuccess(newPost))
+    await dispatch(actions.addPostSuccess(newPost))
 }
 
 export const deletePost = (postId: number): ThunkType => async (dispatch) => {
-    await dispatch(deletePostSuccess(postId))
+    await dispatch(actions.deletePostSuccess(postId))
 }
 
 export const likePost = (postId: number): ThunkType => async (dispatch) => {
-    await dispatch(likePostSuccess(postId))
+    await dispatch(actions.likePostSuccess(postId))
 }
 
 export const dislikePost = (postId: number): ThunkType => async (dispatch) => {
-    await dispatch(dislikePostSuccess(postId))
+    await dispatch(actions.dislikePostSuccess(postId))
 }
 
 
 
-export default postReducer;
+export default postReducer

@@ -1,11 +1,6 @@
 import {checkAuth} from './auth-reducer'
 import {ThunkAction} from "redux-thunk"
-import {AppStateType} from "./redux-store"
-
-
-
-const SET_INITIAL = 'app/SET_INITIAL'
-const SET_GLOBAL_ERROR = 'app/SET_GLOBAL_ERROR'
+import {AppStateType, InferActionsTypes} from "./redux-store"
 
 
 
@@ -22,13 +17,13 @@ const appReducer = (state = initialState, action: ActionTypes): InitialStateType
 
     switch (action.type) {
 
-        case SET_INITIAL:
+        case 'app/SET_INITIAL':
             return {
                 ...state,
                 initialized: true
             };
 
-        case SET_GLOBAL_ERROR:
+        case 'app/SET_GLOBAL_ERROR':
             return {
                 ...state,
                 globalError: action.error
@@ -42,18 +37,12 @@ const appReducer = (state = initialState, action: ActionTypes): InitialStateType
 
 
 
-type ActionTypes = SetInitialActionType | SetGlobalErrorActionType
+type ActionTypes = InferActionsTypes<typeof actions>
 
-type SetInitialActionType = {
-    type: typeof SET_INITIAL
+export const actions = {
+    setInitial: () => ({ type: 'app/SET_INITIAL' } as const),
+    setGlobalError:  (error: string) => ({ type: 'app/SET_GLOBAL_ERROR', error } as const)
 }
-export const setInitial = (): SetInitialActionType => ({ type: SET_INITIAL })
-
-type SetGlobalErrorActionType = {
-    type: typeof SET_GLOBAL_ERROR
-    error: string
-}
-export const setGlobalError = (error: string): SetGlobalErrorActionType => ({ type: SET_GLOBAL_ERROR, error })
 
 
 
@@ -61,7 +50,7 @@ type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
 
 export const initializeApp = ():ThunkType => async (dispatch) => {
     await dispatch(checkAuth())
-    dispatch(setInitial())
+    dispatch(actions.setInitial())
 }
 
 

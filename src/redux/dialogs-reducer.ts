@@ -3,17 +3,7 @@ import {UserType} from "../types/User"
 import {DialogType} from "../types/Dialog"
 import {MessageType} from "../types/Message"
 import {ThunkAction} from "redux-thunk"
-import {AppStateType} from "./redux-store"
-
-
-
-const SET_CURRENT_DIALOG_ID = 'dialogs/SET_CURRENT_DIALOG_ID'
-const SET_CURRENT_USER = 'dialogs/SET_CURRENT_USER'
-const SEND_MESSAGE = 'dialogs/SEND-MESSAGE'
-const SET_DIALOG = 'dialogs/SET_DIALOG'
-const SET_USER = 'dialogs/SET_USER'
-const SET_IS_MESSAGE_FETCHING = 'dialogs/MESSAGE_IS_FETCHING'
-const SET_IS_MESSAGES_LOADING = 'dialogs/SET_IS_MESSAGES_LOADING'
+import {AppStateType, InferActionsTypes} from "./redux-store"
 
 
 
@@ -48,19 +38,19 @@ export type InitialStateType = typeof initialState
 const dialogsReducer = (state = initialState, action: ActionTypes): InitialStateType => {
     switch (action.type) {
 
-        case SET_CURRENT_DIALOG_ID:
+        case 'dialogs/SET_CURRENT_DIALOG_ID':
             return {
                 ...state,
                 currentDialogId: action.dialogId
             }
 
-        case SET_CURRENT_USER:
+        case 'dialogs/SET_CURRENT_USER':
             return {
                 ...state,
                 currentUser: action.user
             }
 
-        case SEND_MESSAGE:
+        case 'dialogs/SEND-MESSAGE':
             return {
                 ...state,
                 messages: [...state.messages, {
@@ -72,7 +62,7 @@ const dialogsReducer = (state = initialState, action: ActionTypes): InitialState
                 }]
             }
 
-        case SET_DIALOG:
+        case 'dialogs/SET_DIALOG':
             return {
                 ...state,
                 dialogs: [...state.dialogs, {
@@ -81,129 +71,123 @@ const dialogsReducer = (state = initialState, action: ActionTypes): InitialState
                 }]
             }
 
-        case SET_USER:
+        case 'dialogs/SET_USER':
             return {
                 ...state,
                 users: [...state.users, action.user]
             }
 
-        case SET_IS_MESSAGE_FETCHING:
+        case 'dialogs/MESSAGE_IS_FETCHING':
             return {
                 ...state,
                 isMessageFetching: action.status
             }
 
-        case SET_IS_MESSAGES_LOADING:
+        case 'dialogs/SET_IS_MESSAGES_LOADING':
             return {
                 ...state,
                 isMessagesLoading: action.status
             }
 
         default:
-            return state;
+            return state
 
     }
 }
 
 
 
-type ActionTypes =
-    SendMessageSuccessActionType |
-    SetDialogActionType |
-    SetUserSuccessActionType |
-    SetIsMessageFetchingActionType |
-    SetIsMessagesLoadingActionType |
-    SetCurrentDialogIdType |
-    SetCurrentUserSuccessType
+type ActionTypes = InferActionsTypes<typeof actions>
 
-export type SetCurrentDialogIdType = {
-    type: typeof SET_CURRENT_DIALOG_ID
-    dialogId: number | null
-}
-export const setCurrentDialogId = (dialogId: number | null): SetCurrentDialogIdType => ({ type: SET_CURRENT_DIALOG_ID, dialogId });
+export const actions = {
+    setCurrentDialogId: (dialogId: number | null) =>
+        ({ type: 'dialogs/SET_CURRENT_DIALOG_ID', dialogId } as const),
 
-export type SetCurrentUserSuccessType = {
-    type: typeof SET_CURRENT_USER
-    user: UserType | null
-}
-export const setCurrentUserSuccess = (user: UserType | null): SetCurrentUserSuccessType => ({ type: SET_CURRENT_USER, user });
+    setCurrentUserSuccess: (user: UserType | null)=>
+        ({ type: 'dialogs/SET_CURRENT_USER', user } as const),
 
-export type SendMessageSuccessActionType = {
-    type: typeof SEND_MESSAGE
-    userId: number
-    newMessage: string
-    date: number
-}
-export const sendMessageSuccess = (userId: number, newMessage: string, date: number): SendMessageSuccessActionType => ({ type: SEND_MESSAGE, userId, newMessage, date });
+    sendMessageSuccess: (userId: number, newMessage: string, date: number) =>
+        ({ type: 'dialogs/SEND-MESSAGE', userId, newMessage, date } as const),
 
-type SetDialogActionType = {
-    type: typeof SET_DIALOG
-    userId: number
-}
-export const setDialog = (userId: number): SetDialogActionType => ({ type: SET_DIALOG, userId });
+    setDialog: (userId: number) =>
+        ({ type: 'dialogs/SET_DIALOG', userId } as const),
 
-type SetUserSuccessActionType = {
-    type: typeof SET_USER
-    user: UserType
-}
-export const setUsersSuccess = (user: UserType): SetUserSuccessActionType => ({ type: SET_USER, user });
+    setUsersSuccess: (user: UserType) =>
+        ({ type: 'dialogs/SET_USER', user } as const),
 
-type SetIsMessageFetchingActionType = {
-    type: typeof SET_IS_MESSAGE_FETCHING
-    status: boolean
-}
-export const setIsMessageFetching = (status: boolean): SetIsMessageFetchingActionType => ({ type: SET_IS_MESSAGE_FETCHING, status });
+    setIsMessageFetching: (status: boolean) =>
+        ({ type: 'dialogs/MESSAGE_IS_FETCHING', status } as const),
 
-type SetIsMessagesLoadingActionType = {
-    type: typeof SET_IS_MESSAGES_LOADING
-    status: boolean
+    setIsMessagesLoading: (status: boolean) =>
+        ({ type: 'dialogs/SET_IS_MESSAGES_LOADING', status } as const)
 }
-export const setIsMessagesLoading = (status: boolean): SetIsMessagesLoadingActionType => ({ type: SET_IS_MESSAGES_LOADING, status });
+
+
 
 
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
+type ThunkBooleanType = ThunkAction<Promise<boolean>, AppStateType, unknown, ActionTypes>
 
 export const setUser = (userId: number): ThunkType => async (dispatch) => {
     if(userId){
-        const response = await profileAPI.getUsersProfile(userId)
-        dispatch(setUsersSuccess(response));
+        try{
+            const response = await profileAPI.getUsersProfile(userId)
+            dispatch(actions.setUsersSuccess(response))
+        }catch{
+            console.log('No such user')
+        }
+    }
+}
+
+export const checkUser = (userId: number): ThunkBooleanType => async () => {
+    try{
+        await profileAPI.getUsersProfile(userId)
+        return true
+    }catch{
+        return false
     }
 }
 
 export const setCurrentUser = (userId: number | null): ThunkType => async (dispatch) => {
-    dispatch(setIsMessagesLoading(true));
+    dispatch(actions.setIsMessagesLoading(true))
     if(userId){
-        const response = await profileAPI.getUsersProfile(userId)
-        dispatch(setCurrentUserSuccess(response))
+        try{
+            const response = await profileAPI.getUsersProfile(userId)
+            if(response.userId){
+                dispatch(actions.setCurrentUserSuccess(response))
+            }
+        }catch{
+            dispatch(actions.setCurrentUserSuccess(null))
+        }
+
     }else{
-        dispatch(setCurrentUserSuccess(null))
+        dispatch(actions.setCurrentUserSuccess(null))
     }
 
-    dispatch(setIsMessagesLoading(false));
+    dispatch(actions.setIsMessagesLoading(false))
 }
 
 export const sendMessage = (userId: number, newMessage: string, date: number): ThunkType => async (dispatch, getState) => {
-    const state = getState();
-    const dialogs = state.dialogsPage.dialogs;
+    const state = getState()
+    const dialogs = state.dialogsPage.dialogs
 
-    dispatch(setIsMessageFetching(true));
-    let isNewDialog = true;
+    dispatch(actions.setIsMessageFetching(true))
+    let isNewDialog = true
     dialogs.forEach((dialog: DialogType) => {
         if(dialog.opponentId === userId){
-            isNewDialog = false;
+            isNewDialog = false
         }
     })
     if(isNewDialog){
         await profileAPI.getUsersProfile(userId)
-        dispatch(setDialog(userId));
-
+        dispatch(actions.setDialog(userId))
     }
-    dispatch(sendMessageSuccess(userId, newMessage, date));
-    dispatch(setIsMessageFetching(false));
+    dispatch(actions.sendMessageSuccess(userId, newMessage, date))
+    dispatch(actions.setIsMessageFetching(false))
 
 }
 
 
 
-export default dialogsReducer;
+export default dialogsReducer

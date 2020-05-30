@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {UserContactsType} from "../types/User";
+import {UserContactsType, UserType} from "../types/User"
 
 const instance = axios.create({
     withCredentials: true,
@@ -7,23 +7,55 @@ const instance = axios.create({
     headers: {
         'API-KEY': '321994fc-144a-4c0e-a36e-a2437572c56d'
     }
-});
+})
 
+export enum ResultCodesEnum {
+    Success = 0,
+    Error = 1,
+}
+
+export enum ResultCodesWithCaptchaEnum {
+    CaptchaIsRequired = 10
+}
+
+
+type UsersUserType = {
+    id: number
+    name: string
+    status: string | null
+    photos: {
+        small: string | null
+        large: string | null
+    }
+    followed: boolean
+}
+
+type RequestUsersResponseType = {
+    items: Array<UsersUserType>
+    totalCount: number
+    error: string
+}
+
+type FollowResponseType = {
+    resultCode: ResultCodesEnum
+    messages: Array<string>
+    data: {}
+}
 
 export const usersAPI = {
 
     requestUsers(currentPage = 1, onPageLimit = 10){
-
         return (
-            instance.get(`users?page=${currentPage}&count=${onPageLimit}`)
+            instance.get<RequestUsersResponseType>(`users?page=${currentPage}&count=${onPageLimit}`)
                 .then(response => {
                     return response.data
                 })
         )
     },
+
     follow(userId: number){
         return (
-            instance.post(`follow/${userId}`, {})
+            instance.post<FollowResponseType>(`follow/${userId}`, {})
                 .then(response => {
                     return response.data
                 })
@@ -32,7 +64,7 @@ export const usersAPI = {
 
     unfollow(userId: number){
         return (
-            instance.delete(`follow/${userId}`)
+            instance.delete<FollowResponseType>(`follow/${userId}`)
                 .then(response => {
                     return response.data
                 })
@@ -40,12 +72,37 @@ export const usersAPI = {
     },
 
 
-};
+}
+
+
+
+type UpdateStatusResponseType = {
+    resultCode: ResultCodesEnum
+    messages: Array<string>
+    data: {}
+}
+
+type SavePhotoResponseType = {
+    resultCode: ResultCodesEnum
+    messages: Array<string>
+    data: {
+        photos: {
+            small: string | null
+            large: string | null
+        }
+    }
+}
+
+type SaveProfileInfoResponseType = {
+    resultCode: ResultCodesEnum
+    messages: Array<string>
+    data: {}
+}
 
 export const profileAPI = {
     getUsersProfile(userId: number){
         return (
-            instance.get(`profile/${userId}`)
+            instance.get<UserType>(`profile/${userId}`)
                 .then(response => {
                     return response.data
                 })
@@ -53,7 +110,7 @@ export const profileAPI = {
     },
     getStatus(userId: number){
         return(
-            instance.get(`profile/status/${userId}`)
+            instance.get<string | null>(`profile/status/${userId}`)
                 .then(response => {
                     return response.data
                 })
@@ -61,18 +118,21 @@ export const profileAPI = {
     },
     updateStatus(status: string | null){
         return(
-            instance.put(`profile/status`, {status:status})
+            instance.put<UpdateStatusResponseType>(`profile/status`, {status:status})
         )
     },
     savePhoto(photoFile: File){
-        let formData = new FormData();
-        formData.append('image', photoFile);
+        let formData = new FormData()
+        formData.append('image', photoFile)
         return(
-            instance.put(`profile/photo`, formData, {
+            instance.put<SavePhotoResponseType>(`profile/photo`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             })
+                .then((response) => {
+                    return response.data
+                })
         )
     },
 
@@ -84,43 +144,74 @@ export const profileAPI = {
         contacts: UserContactsType
     }){
         return(
-            instance.put(`profile`, profile)
+            instance.put<SaveProfileInfoResponseType>(`profile`, profile)
         )
     }
 }
 
 
 
+type checkAuthType = {
+    data: {
+        id: number
+        email: string
+        login: string
+    }
+    resultCode: ResultCodesEnum
+    messages: Array<string>
+}
+
+type LoginResponseType = {
+    data: {
+        userId: number
+    }
+    resultCode: ResultCodesEnum & ResultCodesWithCaptchaEnum
+    messages: Array<string>
+}
+
+type LogoutResponseType = {
+    data: {}
+    resultCode: ResultCodesEnum
+    messages: Array<string>
+}
+
 export const authAPI = {
     checkAuth(){
         return (
-            instance.get(`auth/me`)
+            instance.get<checkAuthType>(`auth/me`)
                 .then(response => {
                     return response.data
                 })
-        );
+        )
     },
     login(email: string, password: string, rememberMe = false, captcha = null as string | null){
         return (
-            instance.post(`auth/login`, {email, password,rememberMe,captcha})
-        );
+            instance.post<LoginResponseType>(`auth/login`, {email, password,rememberMe,captcha})
+        )
     },
     logout(){
         return (
-            instance.delete(`auth/login`)
-        );
-    },
-};
+            instance.delete<LogoutResponseType>(`auth/login`)
+        )
+    }
+}
 
+
+
+type GetCaptchaUrlResponseType = {
+    url: string
+}
 
 export const securityAPI = {
     getCaptchaUrl(){
         return (
-            instance.get(`security/get-captcha-url`)
-        );
-    },
-
-};
+            instance.get<GetCaptchaUrlResponseType>(`security/get-captcha-url`)
+                .then(response => {
+                    return response.data.url
+                })
+        )
+    }
+}
 
 
 

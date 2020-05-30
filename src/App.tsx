@@ -3,7 +3,7 @@ import './App.sass'
 import {BrowserRouter, Redirect, Route, Switch, withRouter} from 'react-router-dom'
 import {connect, Provider} from "react-redux"
 import {compose} from "redux"
-import {initializeApp, setGlobalError} from "./redux/app-reducer"
+import {actions, initializeApp} from "./redux/app-reducer"
 import {getInitialized, getGlobalError} from "./redux/app-selectors"
 import store, {AppStateType} from "./redux/redux-store"
 import Preloader from "./components/common/Preloader/Preloader"
@@ -159,7 +159,7 @@ const mapStateToProps = (state: AppStateType): MapStateToProps => ({
 
 const mapDispatchToProps: MapDispatchToProps = {
     initializeApp,
-    setGlobalError
+    setGlobalError: actions.setGlobalError
 }
 
 
