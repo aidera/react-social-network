@@ -1,6 +1,9 @@
-import {authAPI, ResultCodesEnum, ResultCodesWithCaptchaEnum, securityAPI} from "../api/api"
-import {ThunkAction} from "redux-thunk"
-import {AppStateType, InferActionsTypes} from "./redux-store"
+import {authAPI} from "../api/auth-api"
+import {securityAPI} from "../api/security-api"
+import {ResultCodesEnum, ResultCodesWithCaptchaEnum} from "../api/api"
+import {InferActionsTypes, BaseThunkType} from "./redux-store"
+
+
 
 
 
@@ -12,8 +15,9 @@ let initialState = {
     captchaUrl: null as string | null,
     isLoading: false
 }
-
 export type InitialStateType = typeof initialState
+
+
 
 
 
@@ -49,7 +53,7 @@ const authReducer = (state = initialState, action: ActionTypes): InitialStateTyp
 
 
 
-type ActionTypes = InferActionsTypes<typeof actions>
+
 
 export const actions = {
     setAuthUserData:
@@ -65,13 +69,13 @@ export const actions = {
     setIsLoading: (status: boolean) =>
         ({ type: 'auth/SET_IS_LOADING', status } as const)
 }
+type ActionTypes = InferActionsTypes<typeof actions>
 
 
 
-type ThunkVoidType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
-type ThunkReturnType = ThunkAction<Promise<string>, AppStateType, unknown, ActionTypes>
 
-export const checkAuth = (): ThunkVoidType => async (dispatch) => {
+
+export const checkAuth = (): BaseThunkType<ActionTypes> => async (dispatch) => {
     const checkout = await authAPI.checkAuth()
     if(checkout.data){
         if(checkout.resultCode === ResultCodesEnum.Success){
@@ -81,7 +85,9 @@ export const checkAuth = (): ThunkVoidType => async (dispatch) => {
     }
 }
 
-export const login = (email: string, password: string, rememberMe: boolean, captcha: string | null): ThunkReturnType => async (dispatch) => {
+
+
+export const login = (email: string, password: string, rememberMe: boolean, captcha: string | null): BaseThunkType<ActionTypes, string> => async (dispatch) => {
     dispatch(actions.setIsLoading(true))
 
     const response = await authAPI.login(email, password, rememberMe, captcha)
@@ -103,21 +109,25 @@ export const login = (email: string, password: string, rememberMe: boolean, capt
             return Promise.reject('Server error')
         }
     }
-
-
 }
 
-export const getCaptchaUrl = (): ThunkVoidType => async (dispatch) => {
+
+
+export const getCaptchaUrl = (): BaseThunkType<ActionTypes> => async (dispatch) => {
     const response = await securityAPI.getCaptchaUrl()
     dispatch(actions.getCaptchaUrlSuccess(response))
 }
 
-export const logout = (): ThunkVoidType => async (dispatch) => {
+
+
+export const logout = (): BaseThunkType<ActionTypes> => async (dispatch) => {
     const response = await authAPI.logout()
     if(response.data.resultCode === ResultCodesEnum.Success){
         dispatch(actions.setAuthUserData(null, null, null, false))
     }
 }
+
+
 
 
 

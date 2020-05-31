@@ -10,22 +10,22 @@ import arrowBackImg from '../../assets/images/arrow-left.svg'
 import Preloader from "../common/Preloader/Preloader"
 import {DialogType} from "../../types/Dialog"
 import {MessageType} from "../../types/Message"
-import {UserType} from "../../types/User"
+import {ProfileType} from "../../types/Profile"
 
 
 
 type PropsType = {
     dialogs: Array<DialogType>
     messages: Array<MessageType>
-    users: Array<UserType>
+    users: Array<ProfileType>
     currentDialogId: number | null
-    currentUser: UserType | null
+    currentUser: ProfileType | null
     isMessageFetching: boolean
     isMessagesLoading: boolean
 
     sendMessage: (userId: number, newMessage: string, date: number) => void
     setDialog: (userId: number) => void
-    findUserInUsersArray: (userId: number) => UserType | null
+    findUserInUsersArray: (userId: number) => ProfileType | null
 }
 
 interface FormValuesType {
@@ -122,7 +122,7 @@ const Dialogs = React.memo((props: PropsType) => {
 
                 <div ref={dialogsListRef} onClick={hideDialogs} className={s.dialogsList}>
                     {dialogs.map(dialog => {
-                        const opponentUser: UserType | null = findUserInUsersArray(dialog.opponentId)
+                        const opponentUser: ProfileType | null = findUserInUsersArray(dialog.opponentId)
                         return <Dialog
                             key={dialog.id}
                             user={opponentUser}
@@ -137,7 +137,7 @@ const Dialogs = React.memo((props: PropsType) => {
                         <>
                             {messages.map(message => {
                                 if (message.opponentId === currentDialogId) {
-                                    const opponentUser: UserType | null = findUserInUsersArray(message.opponentId)
+                                    const opponentUser: ProfileType | null = findUserInUsersArray(message.opponentId)
                                     return <Message
                                         key={message.id}
                                         opponent={opponentUser}

@@ -7,16 +7,13 @@ import {AppStateType} from "../../redux/redux-store"
 
 
 
-type MapStateToProps = {
-    isAuth: boolean
-    login: string | null
-}
+type MapStateToPropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchToProps = {
     logout: () => void
 }
 
-type PropsType = MapStateToProps & MapDispatchToProps
+type PropsType = MapStateToPropsType & MapDispatchToProps
 
 class HeaderComponent extends React.PureComponent<PropsType> {
 
@@ -35,7 +32,7 @@ class HeaderComponent extends React.PureComponent<PropsType> {
 
 
 
-const mapStateToProps = (state: AppStateType): MapStateToProps => ({
+const mapStateToProps = (state: AppStateType) => ({
     isAuth: getIsAuth(state),
     login: getLogin(state),
 })

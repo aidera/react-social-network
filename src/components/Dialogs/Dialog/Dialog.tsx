@@ -3,12 +3,12 @@ import s from './Dialog.module.sass'
 import {NavLink} from 'react-router-dom'
 import PreloaderSmall from "../../common/PreloaderSmall/PreloaderSmall"
 import defaultUserImg from '../../../assets/images/default-user.png'
-import {UserType} from "../../../types/User"
+import {ProfileType} from "../../../types/Profile"
 
 
 
 type PropsType = {
-    user: UserType | null
+    user: ProfileType | null
 }
 
 const Dialog: React.FC<PropsType> = React.memo(({user}) => {

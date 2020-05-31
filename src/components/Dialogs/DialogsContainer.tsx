@@ -22,21 +22,11 @@ import {
 import {withRouter, RouteComponentProps} from "react-router-dom"
 import {Helmet} from "react-helmet"
 import {DialogType} from "../../types/Dialog"
-import {MessageType} from "../../types/Message"
-import {UserType} from "../../types/User"
 import {AppStateType} from "../../redux/redux-store"
 
 
 
-type MapStateToPropsType = {
-    currentDialogId: number | null
-    currentUser: UserType | null
-    dialogs: Array<DialogType>
-    messages: Array<MessageType>
-    users: Array<UserType>
-    isMessageFetching: boolean
-    isMessagesLoading: boolean
-}
+type MapStateToPropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchToPropsType = {
     setCurrentDialogId: (dialogId: number | null) => void
@@ -152,7 +142,7 @@ class DialogsContainer extends React.PureComponent<PropsType>{
 
 
 
-const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
+const mapStateToProps = (state: AppStateType) => {
     return {
         currentDialogId: getCurrentDialogId(state),
         currentUser: getCurrentUser(state),
@@ -175,8 +165,8 @@ const mapDispatchToProps: MapDispatchToPropsType = {
 
 
 
-export default compose(
+export default compose<React.ComponentType>(
     connect(mapStateToProps, mapDispatchToProps),
     withRouter,
     withAuthRedirect // Protect from non-auth users
-)(DialogsContainer) as React.ComponentType<any>
+)(DialogsContainer)

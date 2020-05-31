@@ -5,12 +5,12 @@ import {NavLink} from 'react-router-dom'
 import PreloaderSmall from "../../common/PreloaderSmall/PreloaderSmall"
 import cn from 'classnames'
 import mailImg from '../../../assets/images/mail.svg'
-import {UserTypeFromUsersPageApi} from "../../../types/User";
+import {UserType} from "../../../types/User";
 
 
 
 type PropsType = {
-    user: UserTypeFromUsersPageApi
+    user: UserType
     follow: (userId: number) => void
     unfollow: (userId: number) => void
     followingInProgress: Array<number>

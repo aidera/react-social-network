@@ -1,6 +1,7 @@
 import {checkAuth} from './auth-reducer'
-import {ThunkAction} from "redux-thunk"
-import {AppStateType, InferActionsTypes} from "./redux-store"
+import {BaseThunkType, InferActionsTypes} from "./redux-store"
+
+
 
 
 
@@ -8,8 +9,9 @@ let initialState = {
     initialized: false,
     globalError: null as string | null
 }
-
 export type InitialStateType = typeof initialState
+
+
 
 
 
@@ -37,21 +39,25 @@ const appReducer = (state = initialState, action: ActionTypes): InitialStateType
 
 
 
-type ActionTypes = InferActionsTypes<typeof actions>
+
+
 
 export const actions = {
     setInitial: () => ({ type: 'app/SET_INITIAL' } as const),
     setGlobalError:  (error: string) => ({ type: 'app/SET_GLOBAL_ERROR', error } as const)
 }
+type ActionTypes = InferActionsTypes<typeof actions>
 
 
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
 
-export const initializeApp = ():ThunkType => async (dispatch) => {
+
+export const initializeApp = ():BaseThunkType<ActionTypes> => async (dispatch) => {
     await dispatch(checkAuth())
     dispatch(actions.setInitial())
 }
+
+
 
 
 

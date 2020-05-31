@@ -9,11 +9,7 @@ import {AppStateType} from "../../redux/redux-store"
 
 
 
-type MapStateToPropsType = {
-    isAuth: boolean
-    captchaUrl: string | null
-    isLoading: boolean
-}
+type MapStateToPropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchToPropsType = {
     login: (email: string, password: string, rememberMe: boolean, captcha: string | null) => any
@@ -47,7 +43,7 @@ class LoginContainer extends React.PureComponent<PropsType> {
 
 
 
-const mapStateToProps = (state: AppStateType): MapStateToPropsType =>( {
+const mapStateToProps = (state: AppStateType) =>( {
     isAuth: getIsAuth(state),
     captchaUrl: getCaptchaUrl(state),
     isLoading: getIsLoading(state)

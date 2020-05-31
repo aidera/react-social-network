@@ -3,7 +3,7 @@ import s from './Users.module.sass'
 import User from "./User/User"
 import Preloader from '../common/Preloader/Preloader'
 import Paginator from '../common/Paginator/Paginator'
-import {UserTypeFromUsersPageApi} from "../../types/User";
+import {UserType} from "../../types/User";
 
 
 
@@ -13,7 +13,7 @@ type PropsType = {
     onPageLimit: number
     isFetching: boolean
     isLoading: boolean
-    users: Array<UserTypeFromUsersPageApi>
+    users: Array<UserType>
     follow: (userId: number) => void
     unfollow: (userId: number) => void
     followingInProgress: Array<number>

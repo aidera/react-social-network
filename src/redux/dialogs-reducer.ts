@@ -1,15 +1,16 @@
-import {profileAPI} from '../api/api'
-import {UserType} from "../types/User"
+import {profileAPI} from '../api/profile-api'
+import {ProfileType} from "../types/Profile"
 import {DialogType} from "../types/Dialog"
 import {MessageType} from "../types/Message"
-import {ThunkAction} from "redux-thunk"
-import {AppStateType, InferActionsTypes} from "./redux-store"
+import {BaseThunkType, InferActionsTypes} from "./redux-store"
+
+
 
 
 
 let initialState = {
     currentDialogId: null as number | null,
-    currentUser: null as UserType | null,
+    currentUser: null as ProfileType | null,
     messages: [
         {id: 1, opponentId: 2, date: 1589972640000, from: 'me', messageText:'Lorem ipsum dolor sit amet.'},
         {id: 2, opponentId: 2, date: 1589976600000, from: 'opponent', messageText:'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis, veritatis.'},
@@ -26,12 +27,13 @@ let initialState = {
         {id: 3, opponentId: 11},
         {id: 4, opponentId: 12}
     ] as Array<DialogType>,
-    users: [] as Array<UserType>,  // collecting users from dialogs arr (that's why we dont need to get user again in Message and Dialog components)
+    users: [] as Array<ProfileType>,  // collecting users from dialogs arr (that's why we dont need to get user again in Message and Dialog components)
     isMessageFetching: false,
     isMessagesLoading: false
 }
-
 export type InitialStateType = typeof initialState
+
+
 
 
 
@@ -97,13 +99,13 @@ const dialogsReducer = (state = initialState, action: ActionTypes): InitialState
 
 
 
-type ActionTypes = InferActionsTypes<typeof actions>
+
 
 export const actions = {
     setCurrentDialogId: (dialogId: number | null) =>
         ({ type: 'dialogs/SET_CURRENT_DIALOG_ID', dialogId } as const),
 
-    setCurrentUserSuccess: (user: UserType | null)=>
+    setCurrentUserSuccess: (user: ProfileType | null)=>
         ({ type: 'dialogs/SET_CURRENT_USER', user } as const),
 
     sendMessageSuccess: (userId: number, newMessage: string, date: number) =>
@@ -112,7 +114,7 @@ export const actions = {
     setDialog: (userId: number) =>
         ({ type: 'dialogs/SET_DIALOG', userId } as const),
 
-    setUsersSuccess: (user: UserType) =>
+    setUsersSuccess: (user: ProfileType) =>
         ({ type: 'dialogs/SET_USER', user } as const),
 
     setIsMessageFetching: (status: boolean) =>
@@ -121,15 +123,13 @@ export const actions = {
     setIsMessagesLoading: (status: boolean) =>
         ({ type: 'dialogs/SET_IS_MESSAGES_LOADING', status } as const)
 }
+type ActionTypes = InferActionsTypes<typeof actions>
 
 
 
 
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
-type ThunkBooleanType = ThunkAction<Promise<boolean>, AppStateType, unknown, ActionTypes>
-
-export const setUser = (userId: number): ThunkType => async (dispatch) => {
+export const setUser = (userId: number): BaseThunkType<ActionTypes> => async (dispatch) => {
     if(userId){
         try{
             const response = await profileAPI.getUsersProfile(userId)
@@ -140,7 +140,9 @@ export const setUser = (userId: number): ThunkType => async (dispatch) => {
     }
 }
 
-export const checkUser = (userId: number): ThunkBooleanType => async () => {
+
+
+export const checkUser = (userId: number): BaseThunkType<ActionTypes, boolean> => async () => {
     try{
         await profileAPI.getUsersProfile(userId)
         return true
@@ -149,7 +151,9 @@ export const checkUser = (userId: number): ThunkBooleanType => async () => {
     }
 }
 
-export const setCurrentUser = (userId: number | null): ThunkType => async (dispatch) => {
+
+
+export const setCurrentUser = (userId: number | null): BaseThunkType<ActionTypes> => async (dispatch) => {
     dispatch(actions.setIsMessagesLoading(true))
     if(userId){
         try{
@@ -168,7 +172,9 @@ export const setCurrentUser = (userId: number | null): ThunkType => async (dispa
     dispatch(actions.setIsMessagesLoading(false))
 }
 
-export const sendMessage = (userId: number, newMessage: string, date: number): ThunkType => async (dispatch, getState) => {
+
+
+export const sendMessage = (userId: number, newMessage: string, date: number): BaseThunkType<ActionTypes> => async (dispatch, getState) => {
     const state = getState()
     const dialogs = state.dialogsPage.dialogs
 
@@ -190,4 +196,7 @@ export const sendMessage = (userId: number, newMessage: string, date: number): T
 
 
 
+
+
 export default dialogsReducer
+

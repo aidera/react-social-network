@@ -1,22 +1,24 @@
-import {profileAPI, ResultCodesEnum} from "../api/api"
-import {UserContactsType, UserPhotosType, UserType} from "../types/User"
-import {ThunkAction} from "redux-thunk"
-import {AppStateType, InferActionsTypes} from "./redux-store"
-
+import {ResultCodesEnum} from "../api/api"
+import {profileAPI} from "../api/profile-api"
+import {UserContactsType, UserPhotosType} from "../types/User"
+import {ProfileType} from "../types/Profile"
+import {BaseThunkType, InferActionsTypes} from "./redux-store"
 
 
 
 
 
 let initialState = {
-    profile: null as UserType | null,
+    profile: null as ProfileType | null,
     isLoadingAvatar: false,
     isLoadingProfileInfoChanges: false,
     status: null as string | null,
     isLoadingStatus: false,
 }
-
 export type InitialStateType = typeof initialState
+
+
+
 
 
 const profileReducer = (state = initialState, action: ActionTypes): InitialStateType => {
@@ -71,11 +73,9 @@ const profileReducer = (state = initialState, action: ActionTypes): InitialState
 
 
 
-type ActionTypes = InferActionsTypes<typeof actions>
-
 
 export const actions = {
-    setUserProfile: (profile: UserType) =>
+    setUserProfile: (profile: ProfileType) =>
         ({ type: 'profile/SET_USER_PROFILE',  profile} as const),
 
     setUserStatus: (status: string | null) =>
@@ -93,15 +93,12 @@ export const actions = {
     setIsLoadingAvatar: (status: boolean) =>
         ({ type: 'profile/SET_IS_LOADING_AVATAR',  status} as const)
 }
+type ActionTypes = InferActionsTypes<typeof actions>
 
 
 
 
-
-type ThunkVoidType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
-type ThunkReturnType = ThunkAction<Promise<string>, AppStateType, unknown, ActionTypes>
-
-export const getUserProfile = (userId: number): ThunkVoidType => {
+export const getUserProfile = (userId: number): BaseThunkType<ActionTypes> => {
     return async (dispatch) => {
         if(userId){
             const response = await profileAPI.getUsersProfile(userId)
@@ -111,7 +108,9 @@ export const getUserProfile = (userId: number): ThunkVoidType => {
     }
 }
 
-export const getUserStatus = (userId: number): ThunkVoidType => async (dispatch) => {
+
+
+export const getUserStatus = (userId: number): BaseThunkType<ActionTypes> => async (dispatch) => {
     dispatch(actions.setIsLoadingStatus(true))
     dispatch(actions.setUserStatus(null))
 
@@ -122,7 +121,9 @@ export const getUserStatus = (userId: number): ThunkVoidType => async (dispatch)
     }
 }
 
-export const updateUserStatus = (status: string | null): ThunkReturnType => async (dispatch) => {
+
+
+export const updateUserStatus = (status: string | null): BaseThunkType<ActionTypes, string> => async (dispatch) => {
     dispatch(actions.setIsLoadingStatus(true))
 
     const response = await profileAPI.updateStatus(status)
@@ -135,7 +136,9 @@ export const updateUserStatus = (status: string | null): ThunkReturnType => asyn
     }
 }
 
-export const savePhoto = (file: File): ThunkVoidType => async (dispatch) => {
+
+
+export const savePhoto = (file: File): BaseThunkType<ActionTypes> => async (dispatch) => {
     dispatch(actions.setIsLoadingAvatar(true))
     const response = await profileAPI.savePhoto(file)
     dispatch(actions.setIsLoadingAvatar(false))
@@ -145,13 +148,15 @@ export const savePhoto = (file: File): ThunkVoidType => async (dispatch) => {
     }
 }
 
+
+
 export const saveProfileInfo = (profileInfo: {
     aboutMe: string | null
     lookingForAJob: boolean
     lookingForAJobDescription: string | null
     fullName: string,
     contacts: UserContactsType
-}): ThunkReturnType => async (dispatch, getState) => {
+}): BaseThunkType<ActionTypes, string> => async (dispatch, getState) => {
 
     dispatch(actions.setIsLoadingProfileInfoChanges(true))
 
@@ -171,6 +176,9 @@ export const saveProfileInfo = (profileInfo: {
     }
     return Promise.reject('Server error')
 }
+
+
+
 
 
 export default profileReducer

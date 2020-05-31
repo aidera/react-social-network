@@ -1,6 +1,7 @@
 import {PostType} from "../types/Post"
-import {ThunkAction} from "redux-thunk"
-import {AppStateType, InferActionsTypes} from "./redux-store"
+import {BaseThunkType, InferActionsTypes} from "./redux-store"
+
+
 
 
 
@@ -15,8 +16,9 @@ let initialState = {
     maxPostId: 4,
     likedPosts: [1,4] as Array<number>,
 }
-
 export type InitialStateType = typeof initialState
+
+
 
 
 
@@ -91,7 +93,7 @@ const postReducer = (state = initialState, action: ActionTypes): InitialStateTyp
 
 
 
-type ActionTypes = InferActionsTypes<typeof actions>
+
 
 export const actions = {
     addPostSuccess: (newPost: string) =>
@@ -106,26 +108,35 @@ export const actions = {
     dislikePostSuccess: (postId: number) =>
         ({ type: 'posts/DISLIKE_POST', postId} as const),
 }
+type ActionTypes = InferActionsTypes<typeof actions>
 
 
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
 
-export const addPost = (newPost: string): ThunkType => async (dispatch) => {
+
+export const addPost = (newPost: string): BaseThunkType<ActionTypes> => async (dispatch) => {
     await dispatch(actions.addPostSuccess(newPost))
 }
 
-export const deletePost = (postId: number): ThunkType => async (dispatch) => {
+
+
+export const deletePost = (postId: number): BaseThunkType<ActionTypes> => async (dispatch) => {
     await dispatch(actions.deletePostSuccess(postId))
 }
 
-export const likePost = (postId: number): ThunkType => async (dispatch) => {
+
+
+export const likePost = (postId: number): BaseThunkType<ActionTypes> => async (dispatch) => {
     await dispatch(actions.likePostSuccess(postId))
 }
 
-export const dislikePost = (postId: number): ThunkType => async (dispatch) => {
+
+
+export const dislikePost = (postId: number): BaseThunkType<ActionTypes> => async (dispatch) => {
     await dispatch(actions.dislikePostSuccess(postId))
 }
+
+
 
 
 

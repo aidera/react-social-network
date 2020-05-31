@@ -6,13 +6,14 @@ import cn from 'classnames'
 import PreloaderSmall from "../../../common/PreloaderSmall/PreloaderSmall"
 import {Form, Formik} from "formik"
 import * as Yup from 'yup'
-import {UserContactsType, UserType} from "../../../../types/User"
+import {UserContactsType} from "../../../../types/User"
+import {ProfileType} from "../../../../types/Profile"
 import {StringSchema} from "yup";
 
 
 
 type PropsType = {
-    profile: UserType
+    profile: ProfileType
     isOwner: boolean
     saveProfileInfo: (profile: {
         aboutMe: string | null

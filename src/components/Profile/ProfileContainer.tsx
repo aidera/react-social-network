@@ -20,18 +20,13 @@ import {
 import {getIsAuth, getUserId} from "../../redux/auth-selectors"
 import {Helmet} from "react-helmet"
 import {AppStateType} from "../../redux/redux-store"
-import {UserContactsType, UserType} from "../../types/User"
+import {UserContactsType} from "../../types/User"
 
 
-type MapStateToProps = {
-    profile: UserType | null | undefined
-    status: string | null
-    isLoadingStatus: boolean
-    isLoadingAvatar: boolean
-    isLoadingProfileInfoChanges: boolean
-    isAuth: boolean
-    authUserId: number | null
-}
+
+
+
+type MapStateToPropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchToProps = {
     getUserProfile: (userId: number) => void
@@ -55,7 +50,7 @@ type PathPropsType = {
     userId: string
 }
 
-type PropsType = MapStateToProps & MapDispatchToProps & OwnPropsType & RouteComponentProps<PathPropsType>
+type PropsType = MapStateToPropsType & MapDispatchToProps & OwnPropsType & RouteComponentProps<PathPropsType>
 
 class ProfileContainer extends React.PureComponent<PropsType> {
 
@@ -117,7 +112,7 @@ class ProfileContainer extends React.PureComponent<PropsType> {
 
 
 
-const mapStateToProps = (state: AppStateType): MapStateToProps => ({
+const mapStateToProps = (state: AppStateType) => ({
     profile: getProfile(state),
     status: getStatus(state),
     isLoadingStatus: getIsLoadingStatus(state),
@@ -137,7 +132,7 @@ const mapDispatchToProps: MapDispatchToProps = {
 
 
 
-export default compose(
+export default compose<React.ComponentType>(
     connect(mapStateToProps,mapDispatchToProps),
     withRouter,
-)(ProfileContainer) as React.ComponentType<any>
+)(ProfileContainer)

@@ -1,7 +1,7 @@
 import React from 'react'
 import s from './Message.module.sass'
 import cn from 'classnames'
-import {UserType} from "../../../types/User"
+import {ProfileType} from "../../../types/Profile"
 
 
 
@@ -9,7 +9,7 @@ type PropsType = {
     messageText: string
     from: string
     date: number
-    opponent: UserType | null
+    opponent: ProfileType | null
 }
 
 const Message: React.FC<PropsType> = React.memo(({

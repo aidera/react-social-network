@@ -3,12 +3,13 @@ import s from './User.module.sass'
 import Status from './Status/Status'
 import Info from "./Info/Info"
 import Avatar from './Avatar/Avatar'
-import {UserContactsType, UserType} from "../../../types/User";
+import {UserContactsType} from "../../../types/User";
+import {ProfileType} from "../../../types/Profile";
 
 
 
 type PropsType = {
-    profile: UserType
+    profile: ProfileType
     status: string | null
     isLoadingStatus: boolean
     isLoadingProfileInfoChanges: boolean

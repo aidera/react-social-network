@@ -17,18 +17,10 @@ import {withRouter} from "react-router-dom"
 import * as qs from 'query-string'
 import {Helmet} from "react-helmet"
 import {AppStateType} from "../../redux/redux-store"
-import {UserTypeFromUsersPageApi} from "../../types/User"
 
 
 
-type MapStateToProps = {
-    users: Array<UserTypeFromUsersPageApi>
-    totalUsersCount: number
-    isFetching: boolean
-    isLoading: boolean
-    followingInProgress: Array<number>
-    isAuth: boolean
-}
+type MapStateToPropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchToProps = {
     requestUsers: (currentPage: number, onPageLimit: number) => void
@@ -42,7 +34,7 @@ type OwnProps = {
     location: any
 }
 
-type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
+type PropsType = MapStateToPropsType & MapDispatchToProps & OwnProps
 
 type StateType = {
     defaultCurrentPage: number
@@ -174,7 +166,7 @@ class UsersContainer extends React.PureComponent<PropsType, StateType> {
 
 
 
-const mapStateToProps = (state: AppStateType): MapStateToProps => {
+const mapStateToProps = (state: AppStateType) => {
     return {
         users: getUsers(state),
         totalUsersCount: getTotalUsersCount(state),
@@ -195,7 +187,7 @@ const mapDispatchToProps: MapDispatchToProps = {
 
 
 
-export default compose(
+export default compose<React.ComponentType>(
     connect(mapStateToProps, mapDispatchToProps),
     withRouter,
-)(UsersContainer) as React.ComponentType<any>
+)(UsersContainer)

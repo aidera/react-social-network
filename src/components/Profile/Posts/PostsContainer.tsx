@@ -4,15 +4,10 @@ import {connect} from "react-redux"
 import {getPosts,getLikedPosts} from "../../../redux/posts-selectors"
 import {getIsAuth} from "../../../redux/auth-selectors"
 import {AppStateType} from "../../../redux/redux-store"
-import {PostType} from "../../../types/Post"
 
 
 
-type MapStateToProps = {
-    posts: Array<PostType>
-    likedPosts: Array<number>
-    isAuth: boolean
-}
+type MapStateToProps = ReturnType<typeof mapStateToProps>
 
 type MapDispatchToProps = {
     addPost: (newPost: string) => void
@@ -21,7 +16,7 @@ type MapDispatchToProps = {
     dislikePost:  (postId: number) => void
 }
 
-const mapStateToProps = (state: AppStateType): MapStateToProps => {
+const mapStateToProps = (state: AppStateType) => {
     return {
         posts: getPosts(state),
         likedPosts: getLikedPosts(state),
@@ -38,7 +33,7 @@ const mapDispatchToProps: MapDispatchToProps = {
 
 
 
-const PostsContainer = connect(mapStateToProps, mapDispatchToProps)(Posts)
+const PostsContainer = connect<MapStateToProps, MapDispatchToProps, {}, AppStateType>(mapStateToProps, mapDispatchToProps)(Posts)
 
 
 

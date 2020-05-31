@@ -4,12 +4,13 @@ import PostsContainer from './Posts/PostsContainer'
 import User from './User/User'
 import Preloader from "../common/Preloader/Preloader"
 import ErrorContent from "../ErrorContent/ErrorContent"
-import {UserContactsType, UserType} from "../../types/User";
+import {UserContactsType} from "../../types/User";
+import {ProfileType} from "../../types/Profile";
 
 
 
 type PropsType = {
-    profile: UserType | null | undefined
+    profile: ProfileType | null | undefined
     isLoadingProfileInfoChanges: boolean
     isLoadingAvatar: boolean
     status: string | null

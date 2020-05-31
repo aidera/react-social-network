@@ -1,21 +1,24 @@
-import {ResultCodesEnum, usersAPI} from "../api/api"
+import {ResultCodesEnum} from "../api/api"
+import {usersAPI} from "../api/users-api"
 import {updateObjectInArray} from "../utils/object-helpers"
-import {UserTypeFromUsersPageApi} from "../types/User"
-import {ThunkAction} from "redux-thunk"
-import {AppStateType, InferActionsTypes} from "./redux-store"
+import {UserType} from "../types/User"
+import {BaseThunkType, InferActionsTypes} from "./redux-store"
 import {Dispatch} from "redux"
 
 
 
+
+
 let initialState = {
-    users: [] as Array<UserTypeFromUsersPageApi>,
+    users: [] as Array<UserType>,
     totalUsersCount: 0,
     isFetching: false,
     followingInProgress: [] as Array<number>,
     isLoading: true
 }
-
 export type InitialStateType = typeof initialState
+
+
 
 
 
@@ -78,12 +81,10 @@ const usersReducer = (state = initialState, action: ActionTypes): InitialStateTy
 
     }
 
-
 }
 
 
 
-type ActionTypes = InferActionsTypes<typeof actions>
 
 
 export const actions = {
@@ -93,10 +94,10 @@ export const actions = {
     unfollowSuccess: (userId: number) =>
         ({ type: 'users/UNFOLLOW', userId: userId } as const),
 
-    setUsers: (users: Array<UserTypeFromUsersPageApi>) =>
+    setUsers: (users: Array<UserType>) =>
         ({ type: 'users/SET-USERS', users } as const),
 
-    setAddUsers: (users: Array<UserTypeFromUsersPageApi>) =>
+    setAddUsers: (users: Array<UserType>) =>
         ({ type: 'users/SET_ADD_USERS', users } as const),
 
     setTotalUsersCount: (total: number) =>
@@ -112,14 +113,13 @@ export const actions = {
         ({ type: 'users/TOGGLE_IS_FOLLOWING_PROGRESS', isFetching, userId } as const)
 
 }
+type ActionTypes = InferActionsTypes<typeof actions>
 
 
 
 
-type ThunkVoidType = ThunkAction<Promise<void>, AppStateType, unknown, ActionTypes>
-type ThunkReturnType = ThunkAction<Promise<string>, AppStateType, unknown, ActionTypes>
 
-export const requestUsers = (currentPage: number, onPageLimit: number): ThunkVoidType =>  {
+export const requestUsers = (currentPage: number, onPageLimit: number): BaseThunkType<ActionTypes> =>  {
     return async (dispatch) => {
 
         dispatch(actions.setIsLoading(true))
@@ -132,7 +132,9 @@ export const requestUsers = (currentPage: number, onPageLimit: number): ThunkVoi
     }
 }
 
-export const requestAddUsers = (currentPage: number, onPageLimit: number): ThunkReturnType =>  {
+
+
+export const requestAddUsers = (currentPage: number, onPageLimit: number): BaseThunkType<ActionTypes, string> =>  {
     return async (dispatch) => {
         dispatch(actions.toggleIsFetching(true))
 
@@ -142,6 +144,7 @@ export const requestAddUsers = (currentPage: number, onPageLimit: number): Thunk
         return Promise.resolve('Get users')
     }
 }
+
 
 
 const followUnfollowFlow = async (dispatch: Dispatch<ActionTypes>,
@@ -161,17 +164,23 @@ const followUnfollowFlow = async (dispatch: Dispatch<ActionTypes>,
     }
 }
 
-export const follow = (userId: number): ThunkVoidType => {
+
+
+export const follow = (userId: number): BaseThunkType<ActionTypes> => {
     return async (dispatch) => {
         await followUnfollowFlow(dispatch, userId, usersAPI.follow(userId), actions.followSuccess(userId))
     }
 }
 
-export const unfollow = (userId: number): ThunkVoidType =>  {
+
+
+export const unfollow = (userId: number): BaseThunkType<ActionTypes> =>  {
     return async (dispatch) => {
         await followUnfollowFlow(dispatch, userId, usersAPI.unfollow(userId), actions.unfollowSuccess(userId))
     }
 }
+
+
 
 
 
