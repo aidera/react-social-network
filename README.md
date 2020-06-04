@@ -1,3 +1,5 @@
+https://l-aidera-l.github.io/react-social-network/
+
 A test social-network maded with course "React: Way of Samurai" - IT-kamasutra.com
 
 Backend is located on https://social-network.samuraijs.com/
