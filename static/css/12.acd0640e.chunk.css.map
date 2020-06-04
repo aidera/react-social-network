@@ -1,1 +1,0 @@
-{"version":3,"sources":["Settings.module.sass"],"names":[],"mappings":"AAEA,0BACI,qBAAuB","file":"12.acd0640e.chunk.css","sourcesContent":["@import \"../../_variables\";\n\n.settings {\n    background-color: white; }\n"]}

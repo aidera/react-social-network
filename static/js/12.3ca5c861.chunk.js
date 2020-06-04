@@ -1,0 +1,2 @@
+(this["webpackJsonpway-of-samurai"]=this["webpackJsonpway-of-samurai"]||[]).push([[12],{208:function(e,a,n){e.exports={news:"News_news__1FeBe"}},211:function(e,a,n){"use strict";n.r(a);var t=n(0),s=n.n(t),l=n(208),r=n.n(l),u=n(104);a.default=function(){return s.a.createElement(s.a.Fragment,null,s.a.createElement(u.a,null,s.a.createElement("title",null,"News")),s.a.createElement("div",{className:r.a.news},"News"))}}}]);
+//# sourceMappingURL=12.3ca5c861.chunk.js.map

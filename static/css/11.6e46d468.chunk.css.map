@@ -1,0 +1,1 @@
+{"version":3,"sources":["Music.module.sass"],"names":[],"mappings":"AAEA,oBACI,qBAAsB","file":"11.6e46d468.chunk.css","sourcesContent":["@import \"../../_variables\";\n\n.music {\n    background-color: pink; }\n"]}

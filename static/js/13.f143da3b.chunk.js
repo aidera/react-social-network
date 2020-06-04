@@ -1,0 +1,2 @@
+(this["webpackJsonpway-of-samurai"]=this["webpackJsonpway-of-samurai"]||[]).push([[13],{210:function(t,e,n){t.exports={settings:"Settings_settings__Md2_-"}},213:function(t,e,n){"use strict";n.r(e);var a=n(0),s=n.n(a),i=n(210),l=n.n(i),r=n(104);e.default=function(){return s.a.createElement(s.a.Fragment,null,s.a.createElement(r.a,null,s.a.createElement("title",null,"Settings")),s.a.createElement("div",{className:l.a.settings},"Settings"))}}}]);
+//# sourceMappingURL=13.f143da3b.chunk.js.map

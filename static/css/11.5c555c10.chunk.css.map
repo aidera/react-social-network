@@ -1,1 +1,0 @@
-{"version":3,"sources":["News.module.sass"],"names":[],"mappings":"AAEA,kBACI,sBAAuB","file":"11.5c555c10.chunk.css","sourcesContent":["@import \"../../_variables\";\n\n.news {\n    background-color: green; }\n"]}
