@@ -1,4 +1,4 @@
-https://l-aidera-l.github.io/react-social-network/
+https://aidera.github.io/react-social-network/
 
 A test social-network maded with course "React: Way of Samurai" - IT-kamasutra.com
 
